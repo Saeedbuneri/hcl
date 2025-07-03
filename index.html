@@ -164,6 +164,7 @@
             margin-bottom: 0;
         }
 
+        /* PDF styles for printing */
         @media print {
             body {
                 background: white;
@@ -193,12 +194,18 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="logo">Healthcare Clinical Laboratory</div>
             <div class="subtitle">Laboratory Report Access</div>
+        </div>
+        <div id="labDetails" style="display:none; text-align:center; margin-bottom:20px;">
+            <div style="font-size:18px; font-weight:bold; color:#4a90e2;">Healthcare Clinical Laboratory</div>
+            <div style="font-size:14px; color:#333;">Opposite to RHC jower</div>
+            <div style="font-size:14px; color:#333;">Contact: 03139232928</div>
         </div>
         
         <form id="reportForm">
@@ -251,6 +258,9 @@
                 <button class="btn btn-inline" onclick="printReport()">
                     Print Report
                 </button>
+                <button class="btn btn-inline" id="whatsappShareBtn" style="background: #25D366; color: white;" onclick="shareOnWhatsApp()">
+                    Share on WhatsApp
+                </button>
             </div>
         </div>
         
@@ -260,9 +270,11 @@
     </div>
 
     <script type="module">
+        // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
         import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
 
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCNG8PPXxuV_BEXo9ydXpcnuFu8J3o897k",
             authDomain: "healthcare-33ed4.firebaseapp.com",
@@ -273,10 +285,14 @@
             measurementId: "G-VSHB9YC5E2"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // Global variable to store report data
         window.currentReportData = null;
 
+        // Handle form submission
         document.getElementById('reportForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -293,12 +309,14 @@
             hideReport();
             
             try {
+                // Get report from Firestore
                 const reportRef = doc(db, 'reports', patientId);
                 const reportSnap = await getDoc(reportRef);
                 
                 if (reportSnap.exists()) {
                     const reportData = reportSnap.data();
                     
+                    // Verify password
                     if (reportData.password === password) {
                         window.currentReportData = reportData;
                         displayReport(reportData);
@@ -335,6 +353,7 @@
         }
 
         function displayReport(reportData) {
+            document.getElementById('labDetails').style.display = 'block';
             const patientDetails = document.getElementById('patientDetails');
             patientDetails.innerHTML = `
                 <table style="width: 100%; border: none;">
@@ -344,24 +363,34 @@
                     <tr><td style="border: none; font-weight: bold;">Gender:</td><td style="border: none;">${reportData.gender}</td></tr>
                     <tr><td style="border: none; font-weight: bold;">Contact:</td><td style="border: none;">${reportData.contact}</td></tr>
                     <tr><td style="border: none; font-weight: bold;">Date:</td><td style="border: none;">${reportData.date}</td></tr>
-                    <tr><td style="border: none; font-weight: bold;">Test:</td><td style="border: none;">${reportData.test_name}</td></tr>
                 </table>
             `;
 
             const testResults = document.getElementById('testResults');
-            if (reportData.test_results && typeof reportData.test_results === 'object') {
-                let resultsTable = `<table><thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Reference Range</th></tr></thead><tbody>`;
-                
-                for (const [param, value] of Object.entries(reportData.test_results)) {
-                    resultsTable += `<tr><td>${param}</td><td><strong>${value}</strong></td><td>-</td><td>-</td></tr>`;
-                }
-                
-                resultsTable += `</tbody></table>`;
-                testResults.innerHTML = resultsTable;
-            } else {
-                testResults.innerHTML = '<p>No test results available.</p>';
+            // Support multiple tests and units/ranges
+            let testHtml = '';
+            let testNames = reportData.test_names || reportData.test_name || [];
+            if (typeof testNames === 'string') {
+                try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
             }
+            const unitsAndRanges = reportData.units_and_ranges || {};
+            for (const testName of testNames) {
+                testHtml += `<div style="margin-bottom:20px;">
+                    <div style="font-weight:bold; color:#357abd; font-size:16px; margin-bottom:5px;">${testName}</div>
+                    <table><thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Reference Range</th></tr></thead><tbody>`;
+                const testFields = (unitsAndRanges[testName] || []);
+                for (const field of testFields) {
+                    const value = (reportData.test_results && reportData.test_results[field.name]) || '';
+                    testHtml += `<tr><td>${field.name}</td><td><strong>${value}</strong></td><td>${field.unit || '-'}</td><td>${field.reference_range || '-'}</td></tr>`;
+                }
+                testHtml += `</tbody></table></div>`;
+            }
+            if (!testHtml) {
+                testHtml = '<p>No test results available.</p>';
+            }
+            testResults.innerHTML = testHtml;
 
+            // Display comments if available
             if (reportData.comments && reportData.comments.trim()) {
                 document.getElementById('commentsSection').style.display = 'block';
                 document.getElementById('doctorComments').innerHTML = `
@@ -371,6 +400,7 @@
                 document.getElementById('commentsSection').style.display = 'none';
             }
 
+            // Display billing information
             const billingInfo = document.getElementById('billingInfo');
             billingInfo.innerHTML = `
                 <table style="width: 100%;">
@@ -387,15 +417,18 @@
                 </table>
             `;
 
+            // Show the report
             document.getElementById('reportContainer').style.display = 'block';
         }
 
+        // Make functions globally available
         window.showLoading = showLoading;
         window.showError = showError;
         window.hideError = hideError;
         window.hideReport = hideReport;
         window.displayReport = displayReport;
 
+        // Check URL parameters for auto-login
         const urlParams = new URLSearchParams(window.location.search);
         const urlPatientId = urlParams.get('patient_id');
         const urlPassword = urlParams.get('password');
@@ -408,6 +441,7 @@
     </script>
 
     <script>
+        // PDF Download function
         function downloadPDF() {
             if (!window.currentReportData) {
                 alert('No report data available');
@@ -415,55 +449,69 @@
             }
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF('p', 'mm', 'a4');
             const reportData = window.currentReportData;
 
-            doc.setFontSize(20);
+            // Lab details
+            doc.setFontSize(18);
             doc.setTextColor(74, 144, 226);
-            doc.text('Healthcare Clinical Laboratory', 20, 30);
-            
+            doc.text('Healthcare Clinical Laboratory', 105, 18, { align: 'center' });
+            doc.setFontSize(12);
+            doc.setTextColor(0,0,0);
+            doc.text('Opposite to RHC jower', 105, 26, { align: 'center' });
+            doc.text('Contact: 03139232928', 105, 32, { align: 'center' });
+            doc.setDrawColor(74, 144, 226);
+            doc.line(20, 36, 190, 36);
+
             doc.setFontSize(16);
-            doc.text('Laboratory Report', 20, 45);
+            doc.text('Laboratory Report', 105, 45, { align: 'center' });
 
             doc.setFontSize(14);
             doc.setTextColor(0, 0, 0);
-            doc.text('Patient Information:', 20, 65);
-            
+            doc.text('Patient Information:', 20, 55);
             doc.setFontSize(10);
-            let yPos = 75;
-            
+            let yPos = 62;
             doc.text(`Patient ID: ${reportData.patient_id}`, 20, yPos);
-            doc.text(`Name: ${reportData.patient_name}`, 20, yPos + 10);
-            doc.text(`Age: ${reportData.age}`, 20, yPos + 20);
-            doc.text(`Gender: ${reportData.gender}`, 20, yPos + 30);
-            doc.text(`Contact: ${reportData.contact}`, 20, yPos + 40);
-            doc.text(`Date: ${reportData.date}`, 20, yPos + 50);
-            doc.text(`Test: ${reportData.test_name}`, 20, yPos + 60);
-
-            yPos += 80;
+            doc.text(`Name: ${reportData.patient_name}`, 80, yPos);
+            doc.text(`Age: ${reportData.age}`, 150, yPos);
+            yPos += 7;
+            doc.text(`Gender: ${reportData.gender}`, 20, yPos);
+            doc.text(`Contact: ${reportData.contact}`, 80, yPos);
+            doc.text(`Date: ${reportData.date}`, 150, yPos);
+            yPos += 12;
             doc.setFontSize(14);
             doc.text('Test Results:', 20, yPos);
-            
+            yPos += 7;
             doc.setFontSize(10);
-            yPos += 15;
-            
-            if (reportData.test_results && typeof reportData.test_results === 'object') {
+            let testNames = reportData.test_names || reportData.test_name || [];
+            if (typeof testNames === 'string') {
+                try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
+            }
+            const unitsAndRanges = reportData.units_and_ranges || {};
+            for (const testName of testNames) {
+                doc.setFont(undefined, 'bold');
+                doc.text(testName, 20, yPos);
+                doc.setFont(undefined, 'normal');
+                yPos += 6;
                 doc.text('Parameter', 20, yPos);
-                doc.text('Value', 80, yPos);
-                doc.text('Unit', 120, yPos);
+                doc.text('Value', 70, yPos);
+                doc.text('Unit', 110, yPos);
                 doc.text('Reference Range', 150, yPos);
-                
-                yPos += 10;
-                doc.line(20, yPos, 190, yPos);
                 yPos += 5;
-                
-                for (const [param, value] of Object.entries(reportData.test_results)) {
-                    doc.text(param, 20, yPos);
-                    doc.text(String(value), 80, yPos);
-                    doc.text('-', 120, yPos);
-                    doc.text('-', 150, yPos);
-                    yPos += 10;
+                doc.setDrawColor(200,200,200);
+                doc.line(20, yPos, 190, yPos);
+                yPos += 4;
+                const testFields = (unitsAndRanges[testName] || []);
+                for (const field of testFields) {
+                    const value = (reportData.test_results && reportData.test_results[field.name]) || '';
+                    doc.text(field.name, 20, yPos);
+                    doc.text(String(value), 70, yPos);
+                    doc.text(field.unit || '-', 110, yPos);
+                    doc.text(field.reference_range || '-', 150, yPos);
+                    yPos += 6;
+                    if (yPos > 270) { doc.addPage(); yPos = 20; }
                 }
+                yPos += 4;
             }
 
             if (reportData.comments && reportData.comments.trim()) {
@@ -472,37 +520,56 @@
                 doc.text('Doctor\'s Comments:', 20, yPos);
                 doc.setFontSize(10);
                 yPos += 10;
-                
                 const splitComments = doc.splitTextToSize(reportData.comments, 170);
                 doc.text(splitComments, 20, yPos);
                 yPos += splitComments.length * 5;
             }
 
-            yPos += 20;
+            yPos += 10;
             doc.setFontSize(14);
             doc.text('Billing Information:', 20, yPos);
             doc.setFontSize(10);
-            yPos += 15;
-            
+            yPos += 7;
             doc.text(`Base Price: ₹${reportData.base_price}`, 20, yPos);
-            doc.text(`Discount: ${reportData.discount}%`, 20, yPos + 10);
-            doc.text(`Final Price: ₹${reportData.final_price}`, 20, yPos + 20);
-            doc.text(`Paid Amount: ₹${reportData.paid_amount}`, 20, yPos + 30);
-            doc.text(`Due Amount: ₹${reportData.due_amount}`, 20, yPos + 40);
+            doc.text(`Discount: ${reportData.discount}%`, 70, yPos);
+            doc.text(`Final Price: ₹${reportData.final_price}`, 120, yPos);
+            yPos += 6;
+            doc.text(`Paid Amount: ₹${reportData.paid_amount}`, 20, yPos);
+            doc.text(`Due Amount: ₹${reportData.due_amount}`, 70, yPos);
 
-            doc.setFontSize(8);
+            yPos += 12;
+            doc.setFontSize(10);
+            doc.setTextColor(74, 144, 226);
+            doc.text('View your report online at: https://hclonline.vercel.app', 20, yPos);
+            yPos += 6;
             doc.setTextColor(128, 128, 128);
-            doc.text('Software by Saeed | Healthcare Clinical Laboratory', 20, 280);
+            doc.setFontSize(8);
+            doc.text('Healthcare Clinical Laboratory | Opposite to RHC jower | Contact: 03139232928', 20, yPos);
+            yPos += 5;
+            doc.text('Software by Saeed', 20, yPos);
 
             doc.save(`Lab_Report_${reportData.patient_id}.pdf`);
         }
 
+        // Print function
         function printReport() {
             if (!window.currentReportData) {
                 alert('No report data available');
                 return;
             }
             window.print();
+        }
+
+        function shareOnWhatsApp() {
+            if (!window.currentReportData) {
+                alert('No report data available');
+                return;
+            }
+            const reportData = window.currentReportData;
+            const url = `https://hclonline.vercel.app?patient_id=${encodeURIComponent(reportData.patient_id)}&password=${encodeURIComponent(reportData.password)}`;
+            const text = `View your lab report from Healthcare Clinical Laboratory:\n${url}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(whatsappUrl, '_blank');
         }
     </script>
 </body>
