@@ -404,14 +404,14 @@
             const billingInfo = document.getElementById('billingInfo');
             billingInfo.innerHTML = `
                 <table style="width: 100%;">
-                    <tr><td style="font-weight: bold;">Base Price:</td><td style="text-align: right;">₹${reportData.base_price}</td></tr>
+                    <tr><td style="font-weight: bold;">Base Price:</td><td style="text-align: right;">Rs ${reportData.base_price}</td></tr>
                     <tr><td style="font-weight: bold;">Discount:</td><td style="text-align: right;">${reportData.discount}%</td></tr>
-                    <tr><td style="font-weight: bold;">Final Price:</td><td style="text-align: right;">₹${reportData.final_price}</td></tr>
-                    <tr><td style="font-weight: bold;">Paid Amount:</td><td style="text-align: right;">₹${reportData.paid_amount}</td></tr>
+                    <tr><td style="font-weight: bold;">Final Price:</td><td style="text-align: right;">Rs ${reportData.final_price}</td></tr>
+                    <tr><td style="font-weight: bold;">Paid Amount:</td><td style="text-align: right;">Rs ${reportData.paid_amount}</td></tr>
                     <tr style="background: ${reportData.due_amount > 0 ? '#ffebee' : '#e8f5e8'};">
                         <td style="font-weight: bold;">Due Amount:</td>
                         <td style="text-align: right; font-weight: bold; color: ${reportData.due_amount > 0 ? '#d32f2f' : '#2e7d32'};">
-                            ₹${reportData.due_amount}
+                            Rs ${reportData.due_amount}
                         </td>
                     </tr>
                 </table>
@@ -530,12 +530,12 @@
             doc.text('Billing Information:', 20, yPos);
             doc.setFontSize(10);
             yPos += 7;
-            doc.text(`Base Price: ₹${reportData.base_price}`, 20, yPos);
+            doc.text(`Base Price: Rs ${reportData.base_price}`, 20, yPos);
             doc.text(`Discount: ${reportData.discount}%`, 70, yPos);
-            doc.text(`Final Price: ₹${reportData.final_price}`, 120, yPos);
+            doc.text(`Final Price: Rs ${reportData.final_price}`, 120, yPos);
             yPos += 6;
-            doc.text(`Paid Amount: ₹${reportData.paid_amount}`, 20, yPos);
-            doc.text(`Due Amount: ₹${reportData.due_amount}`, 70, yPos);
+            doc.text(`Paid Amount: Rs ${reportData.paid_amount}`, 20, yPos);
+            doc.text(`Due Amount: Rs ${reportData.due_amount}`, 70, yPos);
 
             yPos += 12;
             doc.setFontSize(10);
