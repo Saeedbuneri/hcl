@@ -490,7 +490,7 @@
     </script>
 
     <script>
-        // PDF Download function - exactly matching printer.py format
+        // PDF Download function - EXACT replica of printer.py format
         function downloadPDF() {
             if (!window.currentReportData) {
                 alert('No report data available');
@@ -501,30 +501,30 @@
             const doc = new jsPDF('p', 'mm', 'a4');
             const reportData = window.currentReportData;
 
-            // --- HEADER (exactly like printer.py) ---
+            // --- HEADER TABLE (exactly like printer.py create_header) ---
+            // Header table with 3 columns: lab info, spacer, QR code
+            const headerData = [
+                ['HEALTHCARE CLINICAL LABORATORY', '', 'QR_CODE'],
+                ['Accredited Medical Laboratory Services', '', `Patient ID: ${reportData.patient_id}`],
+                ['123 Medical Center Drive, Healthcare City', '', `Password: ${reportData.password}`],
+                ['Phone: +1 (555) 123-4567 | Email: info@healthcarelab.com', '', 'Access: hclonline.vercel.app']
+            ];
+
+            // Create header table exactly like printer.py
+            let yPos = 10;
+            const colWidths = [114, 12, 64]; // 4.5inch, 0.5inch, 2inch in mm
+            
+            // Header background and border
             doc.setFillColor(248, 253, 255); // #f8fdff
-            doc.rect(10, 10, 190, 28, 'F');
+            doc.rect(10, yPos, 190, 28, 'F');
             doc.setDrawColor(26, 35, 126); // #1a237e
-            doc.rect(10, 10, 190, 28);
+            doc.rect(10, yPos, 190, 28);
             
-            // Lab name and info (left side)
+            // Row 1: Lab name and QR code
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(16);
+            doc.setFontSize(14);
             doc.setTextColor(26, 35, 126);
-            doc.text('HEALTHCARE CLINICAL LABORATORY', 20, 18);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.setTextColor(0,0,0);
-            doc.text('Accredited Medical Laboratory Services', 20, 24);
-            doc.setFontSize(8);
-            doc.text('123 Medical Center Drive, Healthcare City', 20, 29);
-            doc.text('Phone: +1 (555) 123-4567 | Email: info@healthcarelab.com', 20, 34);
-            
-            // Patient credentials (right side)
-            doc.setFontSize(7);
-            doc.text(`Patient ID: ${reportData.patient_id}`, 150, 24);
-            doc.text(`Password: ${reportData.password}`, 150, 29);
-            doc.text('Access: hclonline.vercel.app', 150, 34);
+            doc.text('HEALTHCARE CLINICAL LABORATORY', 15, yPos + 8);
             
             // QR code (right side)
             if (window.QRCode) {
@@ -536,10 +536,31 @@
                     correctLevel: window.QRCode.CorrectLevel.L
                 });
                 const qrImg = qr._oDrawing._elImage.src;
-                doc.addImage(qrImg, 'PNG', 170, 13, 20, 20);
+                doc.addImage(qrImg, 'PNG', 170, yPos + 3, 20, 20);
             }
+            
+            // Row 2: Services and Patient ID
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(0,0,0);
+            doc.text('Accredited Medical Laboratory Services', 15, yPos + 14);
+            doc.setFontSize(7);
+            doc.text(`Patient ID: ${reportData.patient_id}`, 170, yPos + 14);
+            
+            // Row 3: Address and Password
+            doc.setFontSize(8);
+            doc.text('123 Medical Center Drive, Healthcare City', 15, yPos + 19);
+            doc.setFontSize(7);
+            doc.text(`Password: ${reportData.password}`, 170, yPos + 19);
+            
+            // Row 4: Contact and Access
+            doc.setFontSize(8);
+            doc.text('Phone: +1 (555) 123-4567 | Email: info@healthcarelab.com', 15, yPos + 24);
+            doc.setFontSize(7);
+            doc.text('Access: hclonline.vercel.app', 170, yPos + 24);
 
-            // --- TEST TITLE (exactly like printer.py) ---
+            // --- TEST TITLE (exactly like printer.py test_title_style) ---
+            yPos = 50;
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(14);
             doc.setTextColor(26, 35, 126);
@@ -548,66 +569,60 @@
                 try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
             }
             const testTitle = testNames.length > 0 ? testNames.join(', ').toUpperCase() : 'LABORATORY REPORT';
-            doc.text(testTitle, 105, 50, { align: 'center' });
+            doc.text(testTitle, 105, yPos, { align: 'center' });
 
-            // --- PATIENT INFORMATION (exactly like printer.py) ---
+            // --- PATIENT INFORMATION TABLE (exactly like printer.py create_patient_info_table) ---
+            yPos = 70;
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
             doc.setTextColor(25, 118, 210); // #1976d2
-            doc.text('PATIENT INFORMATION', 20, 60);
+            doc.text('PATIENT INFORMATION', 20, yPos);
+            yPos += 8;
             
-            // Patient info table with alternating background colors
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.setTextColor(0,0,0);
+            // Patient info table with exact printer.py structure
+            const patientData = [
+                ['Patient Name:', reportData.patient_name, 'Age:', reportData.age],
+                ['Gender:', reportData.gender, 'Contact:', reportData.contact],
+                ['Patient ID:', reportData.patient_id, 'Collection Date:', reportData.date]
+            ];
             
-            // Row 1 - Patient Name and Age
-            doc.setFillColor(227, 242, 253); // #e3f2fd
-            doc.rect(20, 65, 170, 8, 'F');
-            doc.setDrawColor(224, 224, 224); // #e0e0e0
-            doc.rect(20, 65, 170, 8);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Patient Name:', 22, 70);
-            doc.setFont('helvetica', 'normal');
-            doc.text(reportData.patient_name, 50, 70);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Age:', 120, 70);
-            doc.setFont('helvetica', 'normal');
-            doc.text(reportData.age, 140, 70);
+            const patientColWidths = [38, 64, 38, 64]; // 1.5inch, 2.5inch, 1.5inch, 2.5inch in mm
             
-            // Row 2 - Gender and Contact
-            doc.setFillColor(255, 255, 255); // White
-            doc.rect(20, 73, 170, 8, 'F');
-            doc.rect(20, 73, 170, 8);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Gender:', 22, 78);
-            doc.setFont('helvetica', 'normal');
-            doc.text(reportData.gender, 50, 78);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Contact:', 120, 78);
-            doc.setFont('helvetica', 'normal');
-            doc.text(reportData.contact, 140, 78);
+            for (let i = 0; i < patientData.length; i++) {
+                const row = patientData[i];
+                const rowY = yPos + (i * 8);
+                
+                // Row background (alternating like printer.py)
+                const bgColor = i % 2 === 0 ? [227, 242, 253] : [255, 255, 255]; // #e3f2fd or white
+                doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                doc.rect(20, rowY - 2, 170, 8, 'F');
+                
+                // Row border
+                doc.setDrawColor(224, 224, 224); // #e0e0e0
+                doc.rect(20, rowY - 2, 170, 8);
+                
+                // Content
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.setTextColor(0,0,0);
+                doc.text(row[0], 22, rowY + 2); // Label 1
+                doc.setFont('helvetica', 'normal');
+                doc.text(row[1], 60, rowY + 2); // Value 1
+                doc.setFont('helvetica', 'bold');
+                doc.text(row[2], 120, rowY + 2); // Label 2
+                doc.setFont('helvetica', 'normal');
+                doc.text(row[3], 158, rowY + 2); // Value 2
+            }
             
-            // Row 3 - Patient ID and Collection Date
-            doc.setFillColor(227, 242, 253); // #e3f2fd
-            doc.rect(20, 81, 170, 8, 'F');
-            doc.rect(20, 81, 170, 8);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Patient ID:', 22, 86);
-            doc.setFont('helvetica', 'normal');
-            doc.text(reportData.patient_id, 50, 86);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Collection Date:', 120, 86);
-            doc.setFont('helvetica', 'normal');
-            doc.text(reportData.date, 140, 86);
+            yPos += 32; // Space after patient table
 
-            // --- TEST RESULTS (exactly like printer.py) ---
+            // --- TEST RESULTS (exactly like printer.py create_test_result_table) ---
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
             doc.setTextColor(25, 118, 210);
-            doc.text('TEST RESULTS', 20, 100);
+            doc.text('TEST RESULTS', 20, yPos);
+            yPos += 8;
             
-            let yPos = 110;
             const unitsAndRanges = reportData.units_and_ranges || {};
             
             for (const testName of testNames) {
@@ -618,20 +633,20 @@
                 doc.text(testName.toUpperCase(), 20, yPos);
                 yPos += 6;
                 
-                // Table header
+                // Table header (exactly like printer.py)
                 doc.setFillColor(26, 35, 126); // #1a237e
-                doc.rect(20, yPos-2, 170, 8, 'F');
+                doc.rect(20, yPos - 2, 170, 8, 'F');
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(9);
                 doc.setTextColor(255, 255, 255);
-                doc.text('Parameter', 22, yPos+2);
-                doc.text('Result', 70, yPos+2);
-                doc.text('Unit', 110, yPos+2);
-                doc.text('Reference Range', 150, yPos+2);
-                doc.text('Status', 180, yPos+2);
+                doc.text('Parameter', 22, yPos + 2);
+                doc.text('Result', 70, yPos + 2);
+                doc.text('Unit', 110, yPos + 2);
+                doc.text('Reference Range', 150, yPos + 2);
+                doc.text('Status', 180, yPos + 2);
                 yPos += 8;
                 
-                // Table rows
+                // Table rows (exactly like printer.py)
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
                 doc.setTextColor(0,0,0);
@@ -644,26 +659,26 @@
                     // Alternating row colors (exactly like printer.py)
                     const bgColor = i % 2 === 0 ? [248, 253, 255] : [255, 255, 255]; // #f8fdff or white
                     doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-                    doc.rect(20, yPos-2, 170, 6, 'F');
+                    doc.rect(20, yPos - 2, 170, 6, 'F');
                     
                     // Cell borders
                     doc.setDrawColor(224, 224, 224);
-                    doc.rect(20, yPos-2, 170, 6);
+                    doc.rect(20, yPos - 2, 170, 6);
                     
-                    // Content
-                    doc.text(field.name, 22, yPos+2);
+                    // Content with exact alignment like printer.py
+                    doc.text(field.name, 22, yPos + 2); // Left aligned
                     doc.setFont('helvetica', 'bold');
-                    doc.text(String(value), 70, yPos+2);
+                    doc.text(String(value), 70, yPos + 2); // Center aligned
                     doc.setFont('helvetica', 'normal');
-                    doc.text(field.unit || '-', 110, yPos+2);
-                    doc.text(field.reference_range || '-', 150, yPos+2);
+                    doc.text(field.unit || '-', 110, yPos + 2); // Center aligned
+                    doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
                     
                     // Status (exactly like printer.py)
                     let status = 'Normal';
                     let statusColor = [56, 142, 60]; // #388e3c
                     doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(status, 180, yPos+2);
+                    doc.text(status, 180, yPos + 2); // Center aligned
                     doc.setTextColor(0,0,0);
                     doc.setFont('helvetica', 'normal');
                     
@@ -685,18 +700,18 @@
                 // Comments box (exactly like printer.py)
                 doc.setFillColor(255, 248, 225); // #fff8e1
                 doc.setDrawColor(255, 213, 79); // #ffd54f
-                doc.rect(20, yPos-4, 170, 12, 'F');
-                doc.rect(20, yPos-4, 170, 12);
+                doc.rect(20, yPos - 4, 170, 12, 'F');
+                doc.rect(20, yPos - 4, 170, 12);
                 
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(10);
                 doc.setTextColor(0,0,0);
                 const splitComments = doc.splitTextToSize(reportData.comments, 165);
-                doc.text(splitComments, 22, yPos+4);
+                doc.text(splitComments, 22, yPos + 4);
                 yPos += splitComments.length * 5 + 8;
             }
 
-            // --- FOOTER (exactly like printer.py) ---
+            // --- FOOTER (exactly like printer.py create_footer) ---
             yPos = Math.max(yPos, 270);
             doc.setFillColor(245, 245, 245); // #f5f5f5
             doc.setDrawColor(224, 224, 224); // #e0e0e0
@@ -706,10 +721,10 @@
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(8);
             doc.setTextColor(102, 102, 102); // #666666
-            doc.text('Healthcare Clinical Laboratory | Accredited by Medical Laboratory Standards | ISO 15189:2012 Certified |', 22, yPos+5);
-            doc.text('Address: 123 Medical Center Drive, Healthcare City, HC 12345 | Phone: +1 (555) 123-4567 |', 22, yPos+9);
+            doc.text('Healthcare Clinical Laboratory | Accredited by Medical Laboratory Standards | ISO 15189:2012 Certified |', 22, yPos + 5);
+            doc.text('Address: 123 Medical Center Drive, Healthcare City, HC 12345 | Phone: +1 (555) 123-4567 |', 22, yPos + 9);
             doc.setFont('helvetica', 'italic');
-            doc.text('This report is computer generated and does not require a signature.', 22, yPos+13);
+            doc.text('This report is computer generated and does not require a signature.', 22, yPos + 13);
 
             doc.save(`Lab_Report_${reportData.patient_id}.pdf`);
         }
