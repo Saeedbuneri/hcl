@@ -490,6 +490,37 @@
     </script>
 
     <script>
+        // Add this helper function at the top of the script (before downloadPDF and printReport)
+        function parseAndCheckRange(value, refRange) {
+            // Try to parse value as float
+            const num = parseFloat(value);
+            if (isNaN(num) || !refRange) return { status: 'Abnormal', color: [255, 143, 0] }; // orange
+            refRange = refRange.trim();
+            // Range: 4.5-11.0
+            let match = refRange.match(/^([<>]=?)?\s*(-?\d+(?:\.\d+)?)\s*(?:-\s*(-?\d+(?:\.\d+)?))?$/);
+            if (match) {
+                if (match[1] === '<' && match[2]) {
+                    // <200
+                    return num < parseFloat(match[2]) ? { status: 'Normal', color: [56,142,60] } : { status: 'High', color: [211,47,47] };
+                } else if (match[1] === '>' && match[2]) {
+                    // >3.5
+                    return num > parseFloat(match[2]) ? { status: 'Normal', color: [56,142,60] } : { status: 'Low', color: [25,118,210] };
+                } else if (match[2] && match[3]) {
+                    // 4.5-11.0
+                    const low = parseFloat(match[2]);
+                    const high = parseFloat(match[3]);
+                    if (num < low) return { status: 'Low', color: [25,118,210] };
+                    if (num > high) return { status: 'High', color: [211,47,47] };
+                    return { status: 'Normal', color: [56,142,60] };
+                } else if (match[2]) {
+                    // Single value, treat as upper limit
+                    return num <= parseFloat(match[2]) ? { status: 'Normal', color: [56,142,60] } : { status: 'High', color: [211,47,47] };
+                }
+            }
+            // Fallback: not a standard range
+            return { status: 'Abnormal', color: [255, 143, 0] };
+        }
+
         // PDF Download function - EXACT replica of printer.py format with page logic
         function downloadPDF() {
             if (!window.currentReportData) {
@@ -685,11 +716,16 @@
                         doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
                         
                         // Status (exactly like printer.py)
-                        let status = 'Normal';
-                        let statusColor = [56, 142, 60]; // #388e3c
+                        const refRange = field.reference_range || '-';
+                        const { status, color: statusColor } = parseAndCheckRange(value, refRange);
+                        let statusSymbol = '';
+                        if (status === 'High') statusSymbol = '▲';
+                        else if (status === 'Low') statusSymbol = '▼';
+                        else if (status === 'Abnormal') statusSymbol = '⚠️';
+                        else if (status === 'Normal') statusSymbol = 'Normal';
                         doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                         doc.setFont('helvetica', 'bold');
-                        doc.text(status, 180, yPos + 2); // Center aligned
+                        doc.text(statusSymbol, 180, yPos + 2); // Center aligned
                         doc.setTextColor(0,0,0);
                         doc.setFont('helvetica', 'normal');
                         
@@ -897,11 +933,16 @@
                     doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
                     
                     // Status (exactly like printer.py)
-                    let status = 'Normal';
-                    let statusColor = [56, 142, 60]; // #388e3c
+                    const refRange = field.reference_range || '-';
+                    const { status, color: statusColor } = parseAndCheckRange(value, refRange);
+                    let statusSymbol = '';
+                    if (status === 'High') statusSymbol = '▲';
+                    else if (status === 'Low') statusSymbol = '▼';
+                    else if (status === 'Abnormal') statusSymbol = '⚠️';
+                    else if (status === 'Normal') statusSymbol = 'Normal';
                     doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(status, 180, yPos + 2); // Center aligned
+                    doc.text(statusSymbol, 180, yPos + 2); // Center aligned
                     doc.setTextColor(0,0,0);
                     doc.setFont('helvetica', 'normal');
                     
@@ -1149,11 +1190,16 @@
                         doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
                         
                         // Status (exactly like printer.py)
-                        let status = 'Normal';
-                        let statusColor = [56, 142, 60]; // #388e3c
+                        const refRange = field.reference_range || '-';
+                        const { status, color: statusColor } = parseAndCheckRange(value, refRange);
+                        let statusSymbol = '';
+                        if (status === 'High') statusSymbol = '▲';
+                        else if (status === 'Low') statusSymbol = '▼';
+                        else if (status === 'Abnormal') statusSymbol = '⚠️';
+                        else if (status === 'Normal') statusSymbol = 'Normal';
                         doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                         doc.setFont('helvetica', 'bold');
-                        doc.text(status, 180, yPos + 2); // Center aligned
+                        doc.text(statusSymbol, 180, yPos + 2); // Center aligned
                         doc.setTextColor(0,0,0);
                         doc.setFont('helvetica', 'normal');
                         
@@ -1361,11 +1407,16 @@
                     doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
                     
                     // Status (exactly like printer.py)
-                    let status = 'Normal';
-                    let statusColor = [56, 142, 60]; // #388e3c
+                    const refRange = field.reference_range || '-';
+                    const { status, color: statusColor } = parseAndCheckRange(value, refRange);
+                    let statusSymbol = '';
+                    if (status === 'High') statusSymbol = '▲';
+                    else if (status === 'Low') statusSymbol = '▼';
+                    else if (status === 'Abnormal') statusSymbol = '⚠️';
+                    else if (status === 'Normal') statusSymbol = 'Normal';
                     doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(status, 180, yPos + 2); // Center aligned
+                    doc.text(statusSymbol, 180, yPos + 2); // Center aligned
                     doc.setTextColor(0,0,0);
                     doc.setFont('helvetica', 'normal');
                     
