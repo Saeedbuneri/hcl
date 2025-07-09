@@ -344,6 +344,8 @@
             const patientId = document.getElementById('patientId').value.trim();
             const password = document.getElementById('password').value.trim();
             
+            console.log('Form submitted with Patient ID:', patientId);
+            
             if (!patientId || !password) {
                 showError('Please enter both Patient ID and Password');
                 return;
@@ -354,29 +356,45 @@
             hideReport();
             
             const email = patientId.toLowerCase() + '@lab.local';
+            console.log('Attempting sign in with email:', email);
+            
             try {
                 // Sign in with Firebase Auth
+                console.log('Calling signInWithEmailAndPassword...');
                 await signInWithEmailAndPassword(auth, email, password);
+                console.log('✅ Firebase Auth sign in successful');
+                
                 // Only fetch the report for this patientId
+                console.log('Fetching report for patient ID:', patientId);
                 const reportRef = doc(db, 'reports', patientId);
                 const reportSnap = await getDoc(reportRef);
+                console.log('Report document exists:', reportSnap.exists());
                 
                 if (reportSnap.exists()) {
                     const reportData = reportSnap.data();
+                    console.log('✅ Report data retrieved successfully');
+                    console.log('Report data keys:', Object.keys(reportData));
                     
                     window.currentReportData = reportData;
                     displayReport(reportData);
                 } else {
+                    console.log('❌ Report document not found in Firestore');
                     showError('Report not found. Please check your Patient ID.');
                     await signOut(auth);
                 }
             } catch (error) {
+                console.log('❌ Error during authentication/fetch:', error);
+                console.log('Error code:', error.code);
+                console.log('Error message:', error.message);
+                
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
                     showError('Invalid Patient ID or Password. Please check your credentials and try again.');
                 } else {
                     showError('Unable to fetch report. Please try again later.');
                 }
-                try { await signOut(auth); } catch {}
+                try { await signOut(auth); } catch (signOutError) {
+                    console.log('Sign out error:', signOutError);
+                }
             }
             
             showLoading(false);
