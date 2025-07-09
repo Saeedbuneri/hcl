@@ -490,7 +490,7 @@
     </script>
 
     <script>
-        // PDF Download function
+        // PDF Download function - exactly matching printer.py format
         function downloadPDF() {
             if (!window.currentReportData) {
                 alert('No report data available');
@@ -501,11 +501,13 @@
             const doc = new jsPDF('p', 'mm', 'a4');
             const reportData = window.currentReportData;
 
-            // --- HEADER ---
+            // --- HEADER (exactly like printer.py) ---
             doc.setFillColor(248, 253, 255); // #f8fdff
             doc.rect(10, 10, 190, 28, 'F');
             doc.setDrawColor(26, 35, 126); // #1a237e
             doc.rect(10, 10, 190, 28);
+            
+            // Lab name and info (left side)
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(16);
             doc.setTextColor(26, 35, 126);
@@ -517,10 +519,13 @@
             doc.setFontSize(8);
             doc.text('123 Medical Center Drive, Healthcare City', 20, 29);
             doc.text('Phone: +1 (555) 123-4567 | Email: info@healthcarelab.com', 20, 34);
+            
+            // Patient credentials (right side)
             doc.setFontSize(7);
             doc.text(`Patient ID: ${reportData.patient_id}`, 150, 24);
             doc.text(`Password: ${reportData.password}`, 150, 29);
             doc.text('Access: hclonline.vercel.app', 150, 34);
+            
             // QR code (right side)
             if (window.QRCode) {
                 const qrUrl = `https://hclonline.vercel.app/view?patient_id=${reportData.patient_id}&password=${reportData.password}`;
@@ -533,183 +538,142 @@
                 const qrImg = qr._oDrawing._elImage.src;
                 doc.addImage(qrImg, 'PNG', 170, 13, 20, 20);
             }
-            doc.setDrawColor(74, 144, 226);
-            doc.line(20, 42, 190, 42);
 
-            // --- REPORT TITLE ---
+            // --- TEST TITLE (exactly like printer.py) ---
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(14);
             doc.setTextColor(26, 35, 126);
-            doc.text('LABORATORY REPORT', 105, 50, { align: 'center' });
-
-            // --- PATIENT INFORMATION ---
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.setTextColor(25, 118, 210); // #1976d2
-            doc.text('PATIENT INFORMATION', 20, 60);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.setTextColor(0,0,0);
-            let yPos = 66;
-            doc.text(`Patient ID: ${reportData.patient_id}`, 20, yPos);
-            doc.text(`Name: ${reportData.patient_name}`, 80, yPos);
-            doc.text(`Age: ${reportData.age}`, 150, yPos);
-            yPos += 7;
-            doc.text(`Gender: ${reportData.gender}`, 20, yPos);
-            doc.text(`Contact: ${reportData.contact}`, 80, yPos);
-            doc.text(`Date: ${reportData.date}`, 150, yPos);
-            yPos += 12;
-
-            // --- TEST GROUPING LOGIC ---
-            // Separate tests into small (<3 fields) and large (>=3 fields)
             let testNames = reportData.test_names || reportData.test_name || [];
             if (typeof testNames === 'string') {
                 try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
             }
+            const testTitle = testNames.length > 0 ? testNames.join(', ').toUpperCase() : 'LABORATORY REPORT';
+            doc.text(testTitle, 105, 50, { align: 'center' });
+
+            // --- PATIENT INFORMATION (exactly like printer.py) ---
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(25, 118, 210); // #1976d2
+            doc.text('PATIENT INFORMATION', 20, 60);
+            
+            // Patient info table with alternating background colors
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(0,0,0);
+            
+            // Row 1 - Patient Name and Age
+            doc.setFillColor(227, 242, 253); // #e3f2fd
+            doc.rect(20, 65, 170, 8, 'F');
+            doc.setDrawColor(224, 224, 224); // #e0e0e0
+            doc.rect(20, 65, 170, 8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Patient Name:', 22, 70);
+            doc.setFont('helvetica', 'normal');
+            doc.text(reportData.patient_name, 50, 70);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Age:', 120, 70);
+            doc.setFont('helvetica', 'normal');
+            doc.text(reportData.age, 140, 70);
+            
+            // Row 2 - Gender and Contact
+            doc.setFillColor(255, 255, 255); // White
+            doc.rect(20, 73, 170, 8, 'F');
+            doc.rect(20, 73, 170, 8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Gender:', 22, 78);
+            doc.setFont('helvetica', 'normal');
+            doc.text(reportData.gender, 50, 78);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Contact:', 120, 78);
+            doc.setFont('helvetica', 'normal');
+            doc.text(reportData.contact, 140, 78);
+            
+            // Row 3 - Patient ID and Collection Date
+            doc.setFillColor(227, 242, 253); // #e3f2fd
+            doc.rect(20, 81, 170, 8, 'F');
+            doc.rect(20, 81, 170, 8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Patient ID:', 22, 86);
+            doc.setFont('helvetica', 'normal');
+            doc.text(reportData.patient_id, 50, 86);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Collection Date:', 120, 86);
+            doc.setFont('helvetica', 'normal');
+            doc.text(reportData.date, 140, 86);
+
+            // --- TEST RESULTS (exactly like printer.py) ---
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(25, 118, 210);
+            doc.text('TEST RESULTS', 20, 100);
+            
+            let yPos = 110;
             const unitsAndRanges = reportData.units_and_ranges || {};
-            let smallTests = [];
-            let largeTests = [];
+            
             for (const testName of testNames) {
-                const testFields = (unitsAndRanges[testName] || []);
-                if (testFields.length < 3) {
-                    smallTests.push(testName);
-                } else {
-                    largeTests.push(testName);
-                }
-            }
-
-            let isFirstPage = true;
-            // --- GROUPED SMALL TESTS ---
-            if (smallTests.length > 0) {
-                if (!isFirstPage) { doc.addPage(); yPos = 20; }
-                isFirstPage = false;
-                // Header, report title, patient info
-                // (reuse the header code from above, or factor into a function if needed)
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(14);
-                doc.setTextColor(26, 35, 126);
-                doc.text('GROUPED TESTS', 105, yPos, { align: 'center' });
-                yPos += 10;
+                // Test name header (like printer.py)
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(11);
                 doc.setTextColor(25, 118, 210);
-                doc.text('PATIENT INFORMATION', 20, yPos);
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
-                doc.setTextColor(0,0,0);
+                doc.text(testName.toUpperCase(), 20, yPos);
                 yPos += 6;
-                doc.text(`Patient ID: ${reportData.patient_id}`, 20, yPos);
-                doc.text(`Name: ${reportData.patient_name}`, 80, yPos);
-                doc.text(`Age: ${reportData.age}`, 150, yPos);
-                yPos += 7;
-                doc.text(`Gender: ${reportData.gender}`, 20, yPos);
-                doc.text(`Contact: ${reportData.contact}`, 80, yPos);
-                doc.text(`Date: ${reportData.date}`, 150, yPos);
-                yPos += 12;
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(11);
-                doc.setTextColor(25, 118, 210);
-                doc.text('TEST RESULTS', 20, yPos);
-                yPos += 7;
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
-                doc.setTextColor(0,0,0);
-                for (const testName of smallTests) {
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(10);
-                    doc.setTextColor(26, 35, 126);
-                    doc.text(testName.toUpperCase(), 20, yPos);
-                    yPos += 6;
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(9);
-                    doc.setTextColor(0,0,0);
-                    doc.text('Parameter', 20, yPos);
-                    doc.text('Value', 70, yPos);
-                    doc.text('Unit', 110, yPos);
-                    doc.text('Reference Range', 150, yPos);
-                    yPos += 5;
-                    doc.setDrawColor(200,200,200);
-                    doc.line(20, yPos, 190, yPos);
-                    yPos += 4;
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(9);
-                    const testFields = (unitsAndRanges[testName] || []);
-                    for (const field of testFields) {
-                        const value = (reportData.test_results && reportData.test_results[field.name]) || '';
-                        doc.text(field.name, 20, yPos);
-                        doc.text(String(value), 70, yPos);
-                        doc.text(field.unit || '-', 110, yPos);
-                        doc.text(field.reference_range || '-', 150, yPos);
-                        yPos += 6;
-                        if (yPos > 270) { doc.addPage(); yPos = 20; }
-                    }
-                    yPos += 4;
-                }
-                // If there are large tests, add a page break
-                if (largeTests.length > 0) { doc.addPage(); yPos = 20; }
-            }
-
-            // --- LARGE TESTS (EACH ON OWN PAGE) ---
-            for (let i = 0; i < largeTests.length; i++) {
-                const testName = largeTests[i];
-                if (i > 0) { doc.addPage(); yPos = 20; }
-                // Header, report title, patient info
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(14);
-                doc.setTextColor(26, 35, 126);
-                doc.text(testName.toUpperCase(), 105, yPos, { align: 'center' });
-                yPos += 10;
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(11);
-                doc.setTextColor(25, 118, 210);
-                doc.text('PATIENT INFORMATION', 20, yPos);
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
-                doc.setTextColor(0,0,0);
-                yPos += 6;
-                doc.text(`Patient ID: ${reportData.patient_id}`, 20, yPos);
-                doc.text(`Name: ${reportData.patient_name}`, 80, yPos);
-                doc.text(`Age: ${reportData.age}`, 150, yPos);
-                yPos += 7;
-                doc.text(`Gender: ${reportData.gender}`, 20, yPos);
-                doc.text(`Contact: ${reportData.contact}`, 80, yPos);
-                doc.text(`Date: ${reportData.date}`, 150, yPos);
-                yPos += 12;
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(11);
-                doc.setTextColor(25, 118, 210);
-                doc.text('TEST RESULTS', 20, yPos);
-                yPos += 7;
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
-                doc.setTextColor(0,0,0);
+                
+                // Table header
+                doc.setFillColor(26, 35, 126); // #1a237e
+                doc.rect(20, yPos-2, 170, 8, 'F');
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(9);
-                doc.setTextColor(0,0,0);
-                doc.text('Parameter', 20, yPos);
-                doc.text('Value', 70, yPos);
-                doc.text('Unit', 110, yPos);
-                doc.text('Reference Range', 150, yPos);
-                yPos += 5;
-                doc.setDrawColor(200,200,200);
-                doc.line(20, yPos, 190, yPos);
-                yPos += 4;
+                doc.setTextColor(255, 255, 255);
+                doc.text('Parameter', 22, yPos+2);
+                doc.text('Result', 70, yPos+2);
+                doc.text('Unit', 110, yPos+2);
+                doc.text('Reference Range', 150, yPos+2);
+                doc.text('Status', 180, yPos+2);
+                yPos += 8;
+                
+                // Table rows
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
+                doc.setTextColor(0,0,0);
                 const testFields = (unitsAndRanges[testName] || []);
-                for (const field of testFields) {
+                
+                for (let i = 0; i < testFields.length; i++) {
+                    const field = testFields[i];
                     const value = (reportData.test_results && reportData.test_results[field.name]) || '';
-                    doc.text(field.name, 20, yPos);
-                    doc.text(String(value), 70, yPos);
-                    doc.text(field.unit || '-', 110, yPos);
-                    doc.text(field.reference_range || '-', 150, yPos);
+                    
+                    // Alternating row colors (exactly like printer.py)
+                    const bgColor = i % 2 === 0 ? [248, 253, 255] : [255, 255, 255]; // #f8fdff or white
+                    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                    doc.rect(20, yPos-2, 170, 6, 'F');
+                    
+                    // Cell borders
+                    doc.setDrawColor(224, 224, 224);
+                    doc.rect(20, yPos-2, 170, 6);
+                    
+                    // Content
+                    doc.text(field.name, 22, yPos+2);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(String(value), 70, yPos+2);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(field.unit || '-', 110, yPos+2);
+                    doc.text(field.reference_range || '-', 150, yPos+2);
+                    
+                    // Status (exactly like printer.py)
+                    let status = 'Normal';
+                    let statusColor = [56, 142, 60]; // #388e3c
+                    doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(status, 180, yPos+2);
+                    doc.setTextColor(0,0,0);
+                    doc.setFont('helvetica', 'normal');
+                    
                     yPos += 6;
                     if (yPos > 270) { doc.addPage(); yPos = 20; }
                 }
                 yPos += 4;
             }
 
-            // --- DOCTOR'S COMMENTS & FOOTER (last page only) ---
+            // --- COMMENTS SECTION (exactly like printer.py) ---
             if (reportData.comments && reportData.comments.trim()) {
                 yPos += 6;
                 doc.setFont('helvetica', 'bold');
@@ -717,27 +681,35 @@
                 doc.setTextColor(25, 118, 210);
                 doc.text("IMPORTANT COMMENTS:", 20, yPos);
                 yPos += 6;
+                
+                // Comments box (exactly like printer.py)
+                doc.setFillColor(255, 248, 225); // #fff8e1
+                doc.setDrawColor(255, 213, 79); // #ffd54f
+                doc.rect(20, yPos-4, 170, 12, 'F');
+                doc.rect(20, yPos-4, 170, 12);
+                
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(10);
                 doc.setTextColor(0,0,0);
-                doc.setFillColor(255, 248, 225); // #fff8e1
-                doc.rect(20, yPos-4, 170, 12, 'F');
-                doc.setDrawColor(255, 213, 79); // #ffd54f
-                doc.rect(20, yPos-4, 170, 12);
                 const splitComments = doc.splitTextToSize(reportData.comments, 165);
                 doc.text(splitComments, 22, yPos+4);
                 yPos += splitComments.length * 5 + 8;
             }
+
+            // --- FOOTER (exactly like printer.py) ---
             yPos = Math.max(yPos, 270);
+            doc.setFillColor(245, 245, 245); // #f5f5f5
+            doc.setDrawColor(224, 224, 224); // #e0e0e0
+            doc.rect(20, yPos, 170, 15, 'F');
+            doc.rect(20, yPos, 170, 15);
+            
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(8);
-            doc.setTextColor(74, 144, 226);
-            doc.text('View your report online at: https://hclonline.vercel.app', 20, yPos);
-            yPos += 6;
-            doc.setTextColor(128, 128, 128);
-            doc.text('Healthcare Clinical Laboratory | 123 Medical Center Drive | Contact: +1 (555) 123-4567', 20, yPos);
-            yPos += 5;
-            doc.text('Software by Saeed', 20, yPos);
+            doc.setTextColor(102, 102, 102); // #666666
+            doc.text('Healthcare Clinical Laboratory | Accredited by Medical Laboratory Standards | ISO 15189:2012 Certified |', 22, yPos+5);
+            doc.text('Address: 123 Medical Center Drive, Healthcare City, HC 12345 | Phone: +1 (555) 123-4567 |', 22, yPos+9);
+            doc.setFont('helvetica', 'italic');
+            doc.text('This report is computer generated and does not require a signature.', 22, yPos+13);
 
             doc.save(`Lab_Report_${reportData.patient_id}.pdf`);
         }
