@@ -719,9 +719,9 @@
                         const refRange = field.reference_range || '-';
                         const { status, color: statusColor } = parseAndCheckRange(value, refRange);
                         let statusSymbol = '';
-                        if (status === 'High') statusSymbol = '▲';
-                        else if (status === 'Low') statusSymbol = '▼';
-                        else if (status === 'Abnormal') statusSymbol = '⚠️';
+                        if (status === 'High') statusSymbol = '\u25B2'; // ▲
+                        else if (status === 'Low') statusSymbol = '\u25BC'; // ▼
+                        else if (status === 'Abnormal') statusSymbol = '!'; // warning
                         else if (status === 'Normal') statusSymbol = 'Normal';
                         doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                         doc.setFont('helvetica', 'bold');
@@ -936,9 +936,9 @@
                     const refRange = field.reference_range || '-';
                     const { status, color: statusColor } = parseAndCheckRange(value, refRange);
                     let statusSymbol = '';
-                    if (status === 'High') statusSymbol = '▲';
-                    else if (status === 'Low') statusSymbol = '▼';
-                    else if (status === 'Abnormal') statusSymbol = '⚠️';
+                    if (status === 'High') statusSymbol = '\u25B2'; // ▲
+                    else if (status === 'Low') statusSymbol = '\u25BC'; // ▼
+                    else if (status === 'Abnormal') statusSymbol = '!'; // warning
                     else if (status === 'Normal') statusSymbol = 'Normal';
                     doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                     doc.setFont('helvetica', 'bold');
@@ -1193,9 +1193,9 @@
                         const refRange = field.reference_range || '-';
                         const { status, color: statusColor } = parseAndCheckRange(value, refRange);
                         let statusSymbol = '';
-                        if (status === 'High') statusSymbol = '▲';
-                        else if (status === 'Low') statusSymbol = '▼';
-                        else if (status === 'Abnormal') statusSymbol = '⚠️';
+                        if (status === 'High') statusSymbol = '\u25B2'; // ▲
+                        else if (status === 'Low') statusSymbol = '\u25BC'; // ▼
+                        else if (status === 'Abnormal') statusSymbol = '!'; // warning
                         else if (status === 'Normal') statusSymbol = 'Normal';
                         doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                         doc.setFont('helvetica', 'bold');
@@ -1410,9 +1410,9 @@
                     const refRange = field.reference_range || '-';
                     const { status, color: statusColor } = parseAndCheckRange(value, refRange);
                     let statusSymbol = '';
-                    if (status === 'High') statusSymbol = '▲';
-                    else if (status === 'Low') statusSymbol = '▼';
-                    else if (status === 'Abnormal') statusSymbol = '⚠️';
+                    if (status === 'High') statusSymbol = '\u25B2'; // ▲
+                    else if (status === 'Low') statusSymbol = '\u25BC'; // ▼
+                    else if (status === 'Abnormal') statusSymbol = '!'; // warning
                     else if (status === 'Normal') statusSymbol = 'Normal';
                     doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                     doc.setFont('helvetica', 'bold');
