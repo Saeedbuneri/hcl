@@ -673,6 +673,9 @@
                         doc.setDrawColor(224, 224, 224);
                         doc.rect(20, yPos - 2, 170, 6);
                         
+                        // Add right border for Status column
+                        doc.line(190, yPos - 2, 190, yPos + 4);
+                        
                         // Content with exact alignment like printer.py
                         doc.text(field.name, 22, yPos + 2); // Left aligned
                         doc.setFont('helvetica', 'bold');
@@ -881,6 +884,9 @@
                     // Cell borders
                     doc.setDrawColor(224, 224, 224);
                     doc.rect(20, yPos - 2, 170, 6);
+                    
+                    // Add right border for Status column
+                    doc.line(190, yPos - 2, 190, yPos + 4);
                     
                     // Content with exact alignment like printer.py
                     doc.text(field.name, 22, yPos + 2); // Left aligned
@@ -1131,6 +1137,9 @@
                         doc.setDrawColor(224, 224, 224);
                         doc.rect(20, yPos - 2, 170, 6);
                         
+                        // Add right border for Status column
+                        doc.line(190, yPos - 2, 190, yPos + 4);
+                        
                         // Content with exact alignment like printer.py
                         doc.text(field.name, 22, yPos + 2); // Left aligned
                         doc.setFont('helvetica', 'bold');
@@ -1339,6 +1348,9 @@
                     // Cell borders
                     doc.setDrawColor(224, 224, 224);
                     doc.rect(20, yPos - 2, 170, 6);
+                    
+                    // Add right border for Status column
+                    doc.line(190, yPos - 2, 190, yPos + 4);
                     
                     // Content with exact alignment like printer.py
                     doc.text(field.name, 22, yPos + 2); // Left aligned
