@@ -375,8 +375,8 @@
                     console.log('✅ Report data retrieved successfully');
                     console.log('Report data keys:', Object.keys(reportData));
                     
-                    window.currentReportData = reportData;
-                    displayReport(reportData);
+                        window.currentReportData = reportData;
+                        displayReport(reportData);
                 } else {
                     console.log('❌ Report document not found in Firestore');
                     showError('Report not found. Please check your Patient ID.');
@@ -390,7 +390,7 @@
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
                     showError('Invalid Patient ID or Password. Please check your credentials and try again.');
                 } else {
-                    showError('Unable to fetch report. Please try again later.');
+                showError('Unable to fetch report. Please try again later.');
                 }
                 try { await signOut(auth); } catch (signOutError) {
                     console.log('Sign out error:', signOutError);
@@ -470,7 +470,7 @@
                             <td style="padding: 8px; font-weight: bold; border: 1px solid #e0e0e0;">Collection Date:</td>
                             <td style="padding: 8px; border: 1px solid #e0e0e0;">${reportData.date}</td>
                         </tr>
-                    </table>
+                </table>
                 </div>
             `;
             
@@ -714,13 +714,6 @@
             const unitsAndRanges = reportData.units_and_ranges || {};
             
             for (const testName of testNames) {
-                // Test name header
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(10);
-                doc.setTextColor(26, 35, 126);
-                doc.text(testName.toUpperCase(), 20, yPos);
-                yPos += 6;
-                
                 // Table header
                 doc.setFillColor(26, 35, 126); // #1a237e
                 doc.rect(20, yPos-2, 170, 8, 'F');
