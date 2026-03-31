@@ -112,11 +112,15 @@
         <a href="../index.html" class="nav-brand" style="width: 100%; justify-content: center; background: #fff; padding: 0;">
             <img src="../images/image.png" alt="Healthcare Clinical Laboratory" style="width: 100%; height: auto; max-height: 250px; object-fit: contain; display: block;">
         </a>
-        <div style="display: flex; justify-content: center; width: 100%; padding: 12px 20px; position: relative; border-top: 1px solid #f0f0f0;">
-            <button id="mobileMenuBtn" aria-label="Toggle menu" style="position: absolute; left: 20px; top: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12px 20px; position: relative; border-top: 1px solid #f0f0f0;">
+            <a href="#" onclick="history.back(); return false;" aria-label="Go Back" style="display: flex; align-items: center; gap: 5px; color: #4a90e2; text-decoration: none; font-weight: 700; z-index: 10;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back
+            </a>
+            <button id="mobileMenuBtn" aria-label="Toggle menu" style="position: absolute; left: 50%; transform: translateX(-50%); top: 12px; z-index: 10;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
-            <div id="navLinks" class="nav-links">
+            <div id="navLinks" class="nav-links" style="margin: 0 auto;">
                 <a href="../index.html" class="nav-link">Home</a>
                 <a href="../tests.html" class="nav-link" style="color:#4a90e2;">Explore Tests</a>
                 <a href="../booking.html" class="nav-link">Book Appointment</a>
@@ -202,7 +206,7 @@
             <div class="cta-box">
                 <h3 style="color:#b71c1c; margin-bottom: 10px;">Ready for your test?</h3>
                 <p>We are conveniently located opposite RHC in Jowar, Salarzai, Buner. Open 24/7 for all your diagnostic needs.</p>
-                <a href="../booking.html" class="btn">Book Appointment Now</a>
+                <a href="../booking.html?test=Blood+Test+(CBC)" class="btn">Book Appointment Now</a>
             </div>
         </div>
     </div>
