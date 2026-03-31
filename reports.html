@@ -348,19 +348,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <!-- Universal Navigation Bar -->
-    <nav>
-        <a href="index.html" class="nav-brand">
-            <img src="images/image.png" alt="Healthcare Clinical Laboratory" style="height: 48px; width: auto; max-width: 200px; object-fit: contain;">
+    <nav style="display: flex; flex-direction: column; padding: 0 !important;">
+        <a href="index.html" class="nav-brand" style="width: 100%; justify-content: center; background: #fff; padding: 0;">
+            <img src="images/image.png" alt="Healthcare Clinical Laboratory" style="width: 100%; height: auto; max-height: 250px; object-fit: contain; display: block;">
         </a>
-        <button id="mobileMenuBtn" aria-label="Toggle menu">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button>
-        <div id="navLinks" class="nav-links">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="tests.html" class="nav-link">Explore Tests</a>
-            <a href="booking.html" class="nav-link">Book Appointment</a>
-            <a href="reports.html" class="nav-btn" style="background:#357abd;">View My Reports</a>
+        <div style="display: flex; justify-content: center; width: 100%; padding: 12px 20px; position: relative; border-top: 1px solid #f0f0f0;">
+            <button id="mobileMenuBtn" aria-label="Toggle menu" style="position: absolute; left: 20px; top: 12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <div id="navLinks" class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="tests.html" class="nav-link">Explore Tests</a>
+                <a href="booking.html" class="nav-link">Book Appointment</a>
+                <a href="reports.html" class="nav-btn" style="background:#357abd;">View My Reports</a>
+            </div>
         </div>
     </nav>
     
