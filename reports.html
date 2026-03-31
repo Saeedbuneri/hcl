@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HealthCare Clinical Laboratory is a trusted medical laboratory opposite RHC in Jowar, Salarzai, Buner, Khyber Pakhtunkhwa. We provide accurate diagnostic services including blood tests, urine tests, CBC, and more.">
+    <meta name="keywords" content="Medical laboratory, Buner, HealthCare Clinical Laboratory, blood test, diagnostic center, CBC, laboratory near me, Khyber Pakhtunkhwa">
+    <!-- Open Graph tags for social media -->
+    <meta property="og:title" content="HealthCare Clinical Laboratory | Reliable Diagnostic Services in Buner">
+    <meta property="og:description" content="Trusted medical laboratory providing accurate diagnostic services including CBC, blood sugar, and urine tests. Located opposite RHC Jowar, Buner. Open 24/7.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hclonline.vercel.app/">
+    
+    <title>Healthcare Clinical Laboratory - Fast & Accurate Diagnostic Services in Buner</title>
+    
+    <!-- Local Business Schema JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalClinic",
+      "name": "HealthCare Clinical Laboratory",
+      "description": "HealthCare Clinical Laboratory is a trusted and professional medical laboratory located opposite RHC in Jowar, Salarzai, Buner, Khyber Pakhtunkhwa. We provide a wide range of accurate and reliable diagnostic services including blood tests, urine tests, CBC, blood sugar tests, liver function tests and many other medical investigations. Our lab is equipped with modern equipment and follows strict hygiene and quality standards to ensure precise results for every patient.",
+      "url": "https://hclonline.vercel.app/",
+      "telephone": "+923139232928",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Opposite RHC Jowar, Salarzai",
+        "addressLocality": "Buner",
+        "addressRegion": "Khyber Pakhtunkhwa",
+        "postalCode": "19290",
+        "addressCountry": "PK"
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      ],
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Wheelchair Accessible",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Free Street and On-site Parking",
+          "value": true
+        }
+      ],
+      "paymentAccepted": "Cash, Credit Card, Mastercard, VISA, NFC Payments",
+      "medicalSpecialty": "Pathology"
+    }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .main-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 70px);
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 90%;
+            max-width: 800px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            color: #4a90e2;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+        
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #28a745, #20a037);
+        }
+        
+        .report-container {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .patient-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .test-results {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            display: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-inline {
+            flex: 1;
+            width: auto;
+            margin-bottom: 0;
+        }
+
+        /* PDF styles for printing */
+        @media print {
+            body {
+                background: white;
+                margin: 0;
+                padding: 20px;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+                max-width: none;
+                width: 100%;
+            }
+            .header {
+                border-bottom: 2px solid #4a90e2;
+                padding-bottom: 20px;
+                margin-bottom: 30px;
+            }
+            .btn, .form-group, .loading, .error {
+                display: none !important;
+            }
+            .report-container {
+                display: block !important;
+                background: white;
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 100%;
+                max-width: 100vw;
+                min-width: 0;
+            }
+            .header {
+                margin-bottom: 18px;
+            }
+            .logo {
+                font-size: 20px;
+            }
+            .subtitle {
+                font-size: 13px;
+            }
+            .form-group label {
+                font-size: 14px;
+            }
+            input {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .btn {
+                font-size: 14px;
+                padding: 12px;
+            }
+            .report-container, .patient-info, .test-results {
+                padding: 10px;
+            }
+            table, th, td {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .btn-inline {
+                width: 100%;
+                margin-bottom: 0;
+            }
+            .footer {
+                font-size: 10px;
+                margin-top: 18px;
+            }
+        }
+
+        /* Universal Navbar CSS */
+        nav { background: white; padding: 15px 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; width: 100%; font-family: 'Segoe UI', sans-serif;}
+        .nav-brand { text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .nav-brand span { font-size: 22px; font-weight: 800; color: #333; letter-spacing: -0.5px; }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-link { color: #555; text-decoration: none; font-weight: 600; font-size: 15px; transition: color 0.2s; }
+        .nav-link:hover { color: #4a90e2; }
+        .nav-btn { background: #4a90e2; color: white; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 15px; transition: all 0.2s; }
+        .nav-btn:hover { background: #357abd; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(74,144,226,0.3); }
+        /* WhatsApp Widget Styles */
+        .wa-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 20px rgba(37,211,102,0.4); z-index: 1000; transition: transform 0.2s; cursor: pointer; border: none; }
+        .wa-float:hover { transform: scale(1.1); }
+        .wa-float svg { width: 35px; height: 35px; fill: currentColor; }
+        
+        .wa-popup { position: fixed; bottom: 100px; right: 25px; width: 320px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; overflow: hidden; display: none; transform-origin: bottom right; font-family: 'Segoe UI', sans-serif;}
+        .wa-popup.show { display: block; animation: popupAnim 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popupAnim { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .wa-header { background: #075E54; color: white; padding: 15px 20px; display: flex; align-items: center; gap: 10px; font-weight: bold; position: relative; }
+        .wa-close { position: absolute; right: 15px; top: 15px; color: white; background: none; border: none; font-size: 24px; font-weight: bold; cursor: pointer; }
+        
+        .wa-body { padding: 20px; background: #ece5dd; }
+        .wa-form-group-wa { margin-bottom: 15px; text-align: left; }
+        .wa-form-group-wa label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: 600; }
+        .wa-select, .wa-textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; font-family: inherit; }
+        .wa-textarea { resize: none; height: 80px; }
+        .wa-select:focus, .wa-textarea:focus { outline: none; border-color: #25D366; }
+        
+        .wa-send-btn { width: 100%; background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s; }
+        .wa-send-btn:hover { background: #128C7E; }
+
+        @media (max-width: 768px) {
+            nav { padding: 15px 20px; }
+            #mobileMenuBtn { display: block; }
+            .nav-links { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; flex-direction: column; padding: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); border-top: 1px solid #eee; }
+            .nav-links.active { display: flex !important; }
+            .nav-link, .nav-btn { width: 100%; text-align: center; padding: 15px 0; border-radius: 8px; }
+            .nav-btn { margin-top: 10px; }
+        }
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <!-- Universal Navigation Bar -->
+    <nav>
+        <a href="/" class="nav-brand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <span>HealthCare<span style="color: #4a90e2;">Lab</span></span>
+        </a>
+        <button id="mobileMenuBtn" aria-label="Toggle menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div id="navLinks" class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/tests.html" class="nav-link">Explore Tests</a>
+            <a href="/booking.html" class="nav-link">Book Appointment</a>
+            <a href="/reports.html" class="nav-btn" style="background:#357abd;">View My Reports</a>
+        </div>
+    </nav>
+    
+    <!-- Floating WhatsApp Widget -->
+    <button id="waFloatBtn" class="wa-float" aria-label="Chat on WhatsApp">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+    </button>
+    <div id="waPopup" class="wa-popup">
+        <div class="wa-header">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            HealthCareLab Support
+            <button id="waCloseBtn" class="wa-close">&times;</button>
+        </div>
+        <div class="wa-body">
+            <div class="wa-form-group-wa">
+                <label>How can we help you?</label>
+                <select id="waCategory" class="wa-select">
+                    <option value="Report Inquiry">I need help with a Report</option>
+                    <option value="Test Information">I want to know about Tests</option>
+                    <option value="Home Collection Query">I need Home Sample Collection</option>
+                    <option value="Booking Question">I have a Booking Question</option>
+                    <option value="General Question">General Question</option>
+                </select>
+            </div>
+            <div class="wa-form-group-wa">
+                <label>Your Message</label>
+                <textarea id="waMessage" class="wa-textarea" placeholder="Type your message here..."></textarea>
+            </div>
+            <button id="waSendBtn" class="wa-send-btn">
+                Send to WhatsApp
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="container">
+        <div class="header">
+            <div class="logo">Healthcare Clinical Laboratory</div>
+            <div class="subtitle">Laboratory Report Access</div>
+        </div>
+        <div id="labDetails" style="display:none; text-align:center; margin-bottom:20px;">
+            <div style="font-size:18px; font-weight:bold; color:#4a90e2;">Healthcare Clinical Laboratory</div>
+            <div style="font-size:14px; color:#333;">Opposite to RHC jower</div>
+            <div style="font-size:14px; color:#333;">Contact: 03139232928</div>
+        </div>
+        
+        <form id="reportForm">
+            <div class="form-group">
+                <label for="patientId">Patient ID</label>
+                <input type="text" id="patientId" name="patientId" placeholder="Enter your Patient ID (e.g. HCL1A2B3C4D)" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your Password" required autocomplete="current-password">
+            </div>
+            
+            <button type="submit" class="btn">View Report</button>
+        </form>
+        
+        <div class="loading" id="loading">
+            Loading your report...
+        </div>
+        
+        <div class="error" id="error">
+            Invalid Patient ID or Password. Please check your credentials and try again.
+        </div>
+        
+        <div class="report-container" id="reportContainer">
+            <div class="patient-info">
+                <h3>Patient Information</h3>
+                <div id="patientDetails"></div>
+            </div>
+            
+            <div class="test-results">
+                <h3>Test Results</h3>
+                <div id="testResults"></div>
+            </div>
+            
+            <div class="test-results" id="commentsSection" style="display: none;">
+                <h3>Doctor's Comments</h3>
+                <div id="doctorComments"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-inline btn-secondary" onclick="downloadPDF()">
+                    Download PDF Report
+                </button>
+                <button class="btn btn-inline" onclick="printReport()">
+                    Print Report
+                </button>
+                <button class="btn btn-inline" id="whatsappShareBtn" style="background: #25D366; color: white;" onclick="shareOnWhatsApp()">
+                    Share on WhatsApp
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Software by Saeed | Healthcare Clinical Laboratory
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
+        import { getAuth, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNG8PPXxuV_BEXo9ydXpcnuFu8J3o897k",
+            authDomain: "healthcare-33ed4.firebaseapp.com",
+            projectId: "healthcare-33ed4",
+            storageBucket: "healthcare-33ed4.firebasestorage.app",
+            messagingSenderId: "1010321513051",
+            appId: "1:1010321513051:web:1170990b0e440a895dbd7e",
+            measurementId: "G-VSHB9YC5E2"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Global variable to store report data
+        window.currentReportData = null;
+
+        // Handle form submission
+        document.getElementById('reportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const patientId = document.getElementById('patientId').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            console.log('Form submitted with Patient ID:', patientId);
+            
+            if (!patientId || !password) {
+                showError('Please enter both Patient ID and Password');
+                return;
+            }
+            
+            showLoading(true);
+            hideError();
+            hideReport();
+            
+            const email = patientId.toLowerCase() + '@lab.local';
+            console.log('Attempting sign in with email:', email);
+            
+            try {
+                // Sign in with Firebase Auth
+                console.log('Calling signInWithEmailAndPassword...');
+                await signInWithEmailAndPassword(auth, email, password);
+                console.log('✅ Firebase Auth sign in successful');
+                
+                // Only fetch the report for this patientId
+                console.log('Fetching report for patient ID:', patientId);
+                const reportRef = doc(db, 'reports', patientId);
+                const reportSnap = await getDoc(reportRef);
+                console.log('Report document exists:', reportSnap.exists());
+                
+                if (reportSnap.exists()) {
+                    const reportData = reportSnap.data();
+                    console.log('✅ Report data retrieved successfully');
+                    console.log('Report data keys:', Object.keys(reportData));
+                    
+                    window.currentReportData = reportData;
+                    displayReport(reportData);
+                } else {
+                    console.log('❌ Report document not found in Firestore');
+                    showError('Report not found. Please check your Patient ID.');
+                    await signOut(auth);
+                }
+            } catch (error) {
+                console.log('❌ Error during authentication/fetch:', error);
+                console.log('Error code:', error.code);
+                console.log('Error message:', error.message);
+                
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    showError('Invalid Patient ID or Password. Please check your credentials and try again.');
+                } else {
+                    showError('Unable to fetch report. Please try again later.');
+                }
+                try { await signOut(auth); } catch (signOutError) {
+                    console.log('Sign out error:', signOutError);
+                }
+            }
+            
+            showLoading(false);
+        });
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function hideReport() {
+            document.getElementById('reportContainer').style.display = 'none';
+        }
+
+        function displayReport(reportData) {
+            document.getElementById('labDetails').style.display = 'block';
+            const patientDetails = document.getElementById('patientDetails');
+            patientDetails.innerHTML = `
+                <table style="width: 100%; border: none;">
+                    <tr><td style="border: none; font-weight: bold;">Patient ID:</td><td style="border: none;">${reportData.patient_id}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Name:</td><td style="border: none;">${reportData.patient_name}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Age:</td><td style="border: none;">${reportData.age}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Gender:</td><td style="border: none;">${reportData.gender}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Contact:</td><td style="border: none;">${reportData.contact}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Date:</td><td style="border: none;">${reportData.date}</td></tr>
+                </table>
+            `;
+
+            const testResults = document.getElementById('testResults');
+            // Support multiple tests and units/ranges
+            let testHtml = '';
+            let testNames = reportData.test_names || reportData.test_name || [];
+            if (typeof testNames === 'string') {
+                try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
+            }
+            const unitsAndRanges = reportData.units_and_ranges || {};
+            for (const testName of testNames) {
+                testHtml += `<div style="margin-bottom:20px;">
+                    <div style="font-weight:bold; color:#357abd; font-size:16px; margin-bottom:5px;">${testName}</div>
+                    <table><thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Reference Range</th></tr></thead><tbody>`;
+                const testFields = (unitsAndRanges[testName] || []);
+                for (const field of testFields) {
+                    const value = (reportData.test_results && reportData.test_results[field.name]) || '';
+                    testHtml += `<tr><td>${field.name}</td><td><strong>${value}</strong></td><td>${field.unit || '-'}</td><td>${field.reference_range || '-'}</td></tr>`;
+                }
+                testHtml += `</tbody></table></div>`;
+            }
+            if (!testHtml) {
+                testHtml = '<p>No test results available.</p>';
+            }
+            testResults.innerHTML = testHtml;
+
+            // Display comments if available
+            if (reportData.comments && reportData.comments.trim()) {
+                document.getElementById('commentsSection').style.display = 'block';
+                document.getElementById('doctorComments').innerHTML = `
+                    <p style="background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #4a90e2;">${reportData.comments}</p>
+                `;
+            } else {
+                document.getElementById('commentsSection').style.display = 'none';
+            }
+
+            // Show the report
+            document.getElementById('reportContainer').style.display = 'block';
+        }
+
+        // Make functions globally available
+        window.showLoading = showLoading;
+        window.showError = showError;
+        window.hideError = hideError;
+        window.hideReport = hideReport;
+        window.displayReport = displayReport;
+
+        // Check URL parameters for auto-login
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlPatientId = urlParams.get('patient_id');
+        const urlPassword = urlParams.get('password');
+
+        if (urlPatientId && urlPassword) {
+            document.getElementById('patientId').value = urlPatientId;
+            document.getElementById('password').value = urlPassword;
+            document.getElementById('reportForm').dispatchEvent(new Event('submit'));
+        }
+    </script>
+
+    <script>
+        // Add this helper function at the top of the script (before downloadPDF and printReport)
+        function parseAndCheckRange(value, refRange) {
+            // Try to parse value as float
+            const num = parseFloat(value);
+            if (isNaN(num) || !refRange) return { status: 'Abnormal', color: [255, 143, 0] }; // orange
+            refRange = refRange.trim();
+            // Range: 4.5-11.0
+            let match = refRange.match(/^([<>]=?)?\s*(-?\d+(?:\.\d+)?)\s*(?:-\s*(-?\d+(?:\.\d+)?))?$/);
+            if (match) {
+                if (match[1] === '<' && match[2]) {
+                    // <200
+                    return num < parseFloat(match[2]) ? { status: 'Normal', color: [56,142,60] } : { status: 'High', color: [211,47,47] };
+                } else if (match[1] === '>' && match[2]) {
+                    // >3.5
+                    return num > parseFloat(match[2]) ? { status: 'Normal', color: [56,142,60] } : { status: 'Low', color: [25,118,210] };
+                } else if (match[2] && match[3]) {
+                    // 4.5-11.0
+                    const low = parseFloat(match[2]);
+                    const high = parseFloat(match[3]);
+                    if (num < low) return { status: 'Low', color: [25,118,210] };
+                    if (num > high) return { status: 'High', color: [211,47,47] };
+                    return { status: 'Normal', color: [56,142,60] };
+                } else if (match[2]) {
+                    // Single value, treat as upper limit
+                    return num <= parseFloat(match[2]) ? { status: 'Normal', color: [56,142,60] } : { status: 'High', color: [211,47,47] };
+                }
+            }
+            // Fallback: not a standard range
+            return { status: 'Abnormal', color: [255, 143, 0] };
+        }
+
+        // PDF Download function - EXACT replica of printer.py format with page logic
+        function downloadPDF() {
+            if (!window.currentReportData) {
+                alert('No report data available');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const reportData = window.currentReportData;
+
+            // --- SEPARATE TESTS INTO SMALL AND LARGE (like printer.py) ---
+            let testNames = reportData.test_names || reportData.test_name || [];
+            if (typeof testNames === 'string') {
+                try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
+            }
+            
+            const unitsAndRanges = reportData.units_and_ranges || {};
+            let smallTests = [];
+            let largeTests = [];
+            
+            for (const testName of testNames) {
+                const testFields = (unitsAndRanges[testName] || []);
+                if (testFields.length < 3) {
+                    smallTests.push(testName);
+                } else {
+                    largeTests.push(testName);
+                }
+            }
+
+            let isFirstPage = true;
+
+            // --- GROUPED SMALL TESTS (like printer.py) ---
+            if (smallTests.length > 0) {
+                if (!isFirstPage) { 
+                    doc.addPage(); 
+                }
+                isFirstPage = false;
+                
+                // Header
+                let yPos = 10;
+                doc.setFillColor(248, 253, 255); // #f8fdff
+                doc.rect(10, yPos, 190, 28, 'F');
+                doc.setDrawColor(26, 35, 126); // #1a237e
+                doc.rect(10, yPos, 190, 28);
+                
+                // Row 1: Lab name and QR code
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(26, 35, 126);
+                doc.text('HEALTHCARE CLINICAL LABORATORY', 15, yPos + 8);
+                
+                // QR code (right side)
+                if (window.QRCode) {
+                    const qrUrl = `https://hclonline.vercel.app/view?patient_id=${reportData.patient_id}&password=${reportData.password}`;
+                    const qr = new window.QRCode(document.createElement('div'), {
+                        text: qrUrl,
+                        width: 40,
+                        height: 40,
+                        correctLevel: window.QRCode.CorrectLevel.L
+                    });
+                    const qrImg = qr._oDrawing._elImage.src;
+                    doc.addImage(qrImg, 'PNG', 170, yPos + 3, 20, 20);
+                }
+                
+                // Row 2: Services and Patient ID
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(0,0,0);
+                doc.text('Accredited Medical Laboratory Services', 15, yPos + 14);
+                doc.setFontSize(7);
+                doc.text(`Patient ID: ${reportData.patient_id}`, 150, yPos + 14);
+                
+                // Row 3: Address and Password
+                doc.setFontSize(8);
+                doc.text('123 Medical Center Drive, Healthcare City', 15, yPos + 19);
+                doc.setFontSize(7);
+                doc.text(`Password: ${reportData.password}`, 150, yPos + 19);
+                
+                // Row 4: Contact and Access
+                doc.setFontSize(8);
+                doc.text('Phone: +1 (555) 123-4567 | Email: info@healthcarelab.com', 15, yPos + 24);
+                doc.setFontSize(7);
+                doc.text('Access: hclonline.vercel.app', 150, yPos + 24);
+
+                // --- GROUPED TESTS TITLE (like printer.py) ---
+                yPos = 50;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(26, 35, 126);
+                doc.text('GROUPED TESTS', 105, yPos, { align: 'center' });
+
+                // --- PATIENT INFORMATION TABLE ---
+                yPos = 70;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(25, 118, 210); // #1976d2
+                doc.text('PATIENT INFORMATION', 20, yPos);
+                yPos += 8;
+                
+                // Patient info table
+                const patientData = [
+                    ['Patient Name:', reportData.patient_name, 'Age:', reportData.age],
+                    ['Gender:', reportData.gender, 'Contact:', reportData.contact],
+                    ['Patient ID:', reportData.patient_id, 'Collection Date:', reportData.date]
+                ];
+                
+                for (let i = 0; i < patientData.length; i++) {
+                    const row = patientData[i];
+                    const rowY = yPos + (i * 8);
+                    
+                    // Row background (alternating like printer.py)
+                    const bgColor = i % 2 === 0 ? [227, 242, 253] : [255, 255, 255]; // #e3f2fd or white
+                    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                    doc.rect(20, rowY - 2, 170, 8, 'F');
+                    
+                    // Row border
+                    doc.setDrawColor(224, 224, 224); // #e0e0e0
+                    doc.rect(20, rowY - 2, 170, 8);
+                    
+                    // Content
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9);
+                    doc.setTextColor(0,0,0);
+                    doc.text(row[0], 22, rowY + 2); // Label 1
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(row[1], 60, rowY + 2); // Value 1
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(row[2], 120, rowY + 2); // Label 2
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(row[3], 158, rowY + 2); // Value 2
+                }
+                
+                yPos += 32; // Space after patient table
+
+                // --- TEST RESULTS FOR GROUPED TESTS ---
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(25, 118, 210);
+                doc.text('TEST RESULTS', 20, yPos);
+                yPos += 8;
+                
+                // Add all small test tables
+                for (const testName of smallTests) {
+                    // Test name header (like printer.py)
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(25, 118, 210);
+                    doc.text(testName.toUpperCase(), 20, yPos);
+                    yPos += 6;
+                    
+                    // Table header (exactly like printer.py)
+                    doc.setFillColor(26, 35, 126); // #1a237e
+                    doc.rect(20, yPos - 2, 174, 8, 'F');
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9);
+                    doc.setTextColor(255, 255, 255);
+                    doc.text('Parameter', 22, yPos + 2);
+                    doc.text('Result', 70, yPos + 2);
+                    doc.text('Unit', 110, yPos + 2);
+                    doc.text('Reference Range', 150, yPos + 2);
+                    doc.text('Status', 180, yPos + 2);
+                    yPos += 8;
+                    
+                    // Table rows (exactly like printer.py)
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9);
+                    doc.setTextColor(0,0,0);
+                    const testFields = (unitsAndRanges[testName] || []);
+                    
+                    for (let i = 0; i < testFields.length; i++) {
+                        const field = testFields[i];
+                        const value = (reportData.test_results && reportData.test_results[field.name]) || '';
+                        
+                        // Alternating row colors (exactly like printer.py)
+                        const bgColor = i % 2 === 0 ? [248, 253, 255] : [255, 255, 255]; // #f8fdff or white
+                        doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                        doc.rect(20, yPos - 2, 174, 6, 'F');
+                        
+                        // Cell borders
+                        doc.setDrawColor(224, 224, 224);
+                        doc.rect(20, yPos - 2, 174, 6);
+                        
+                        // Add right border for Status column
+                        doc.line(194, yPos - 2, 194, yPos + 4);
+                        
+                        // Content with exact alignment like printer.py
+                        doc.text(field.name, 22, yPos + 2); // Left aligned
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(String(value), 70, yPos + 2); // Center aligned
+                        doc.setFont('helvetica', 'normal');
+                        doc.text(field.unit || '-', 110, yPos + 2); // Center aligned
+                        doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
+                        
+                        // Status (exactly like printer.py)
+                        const refRange = field.reference_range || '-';
+                        const { status, color: statusColor } = parseAndCheckRange(value, refRange);
+                        let statusSymbol = '';
+                        if (status === 'High') statusSymbol = '^ High';
+                        else if (status === 'Low') statusSymbol = 'v Low';
+                        else if (status === 'Abnormal') statusSymbol = '!!'; // warning, double exclamation for visibility
+                        else if (status === 'Normal') statusSymbol = 'Normal';
+                        doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(11); // Set font size to 11 for status
+                        doc.text(statusSymbol, 188, yPos + 2); // Center aligned, moved right
+                        doc.setTextColor(0,0,0);
+                        doc.setFont('helvetica', 'normal');
+                        
+                        yPos += 6;
+                        if (yPos > 270) { doc.addPage(); yPos = 20; }
+                    }
+                    yPos += 4;
+                }
+
+                // --- COMMENTS SECTION (only on grouped page if available) ---
+                if (reportData.comments && reportData.comments.trim()) {
+                    yPos += 6;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(25, 118, 210);
+                    doc.text("IMPORTANT COMMENTS:", 20, yPos);
+                    yPos += 6;
+                    
+                    // Comments box (exactly like printer.py)
+                    doc.setFillColor(255, 248, 225); // #fff8e1
+                    doc.setDrawColor(255, 213, 79); // #ffd54f
+                    doc.rect(20, yPos - 4, 170, 12, 'F');
+                    doc.rect(20, yPos - 4, 170, 12);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(10);
+                    doc.setTextColor(0,0,0);
+                    const splitComments = doc.splitTextToSize(reportData.comments, 165);
+                    doc.text(splitComments, 22, yPos + 4);
+                    yPos += splitComments.length * 5 + 8;
+                }
+
+                // --- FOOTER (only on grouped page) ---
+                yPos = Math.max(yPos, 270);
+                doc.setFillColor(245, 245, 245); // #f5f5f5
+                doc.setDrawColor(224, 224, 224); // #e0e0e0
+                doc.rect(20, yPos, 170, 15, 'F');
+                doc.rect(20, yPos, 170, 15);
+                
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
+                doc.setTextColor(102, 102, 102); // #666666
+                doc.text('Healthcare Clinical Laboratory | Accredited by Medical Laboratory Standards | ISO 15189:2012 Certified |', 22, yPos + 5);
+                doc.text('Address: 123 Medical Center Drive, Healthcare City, HC 12345 | Phone: +1 (555) 123-4567 |', 22, yPos + 9);
+                doc.setFont('helvetica', 'italic');
+                doc.text('This report is computer generated and does not require a signature.', 22, yPos + 13);
+
+                // Page break if there are large tests
+                if (largeTests.length > 0) {
+                    doc.addPage();
+                }
+            }
+
+            // --- LARGE TESTS (EACH ON OWN PAGE) ---
+            for (let i = 0; i < largeTests.length; i++) {
+                const testName = largeTests[i];
+                if (i > 0 || (smallTests.length === 0 && i === 0)) { 
+                    doc.addPage(); 
+                }
+                
+                // Header for each large test page
+                let yPos = 10;
+                doc.setFillColor(248, 253, 255); // #f8fdff
+                doc.rect(10, yPos, 190, 28, 'F');
+                doc.setDrawColor(26, 35, 126); // #1a237e
+                doc.rect(10, yPos, 190, 28);
+                
+                // Row 1: Lab name and QR code
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(26, 35, 126);
+                doc.text('HEALTHCARE CLINICAL LABORATORY', 15, yPos + 8);
+                
+                // QR code (right side)
+                if (window.QRCode) {
+                    const qrUrl = `https://hclonline.vercel.app/view?patient_id=${reportData.patient_id}&password=${reportData.password}`;
+                    const qr = new window.QRCode(document.createElement('div'), {
+                        text: qrUrl,
+                        width: 40,
+                        height: 40,
+                        correctLevel: window.QRCode.CorrectLevel.L
+                    });
+                    const qrImg = qr._oDrawing._elImage.src;
+                    doc.addImage(qrImg, 'PNG', 170, yPos + 3, 20, 20);
+                }
+                
+                // Row 2: Services and Patient ID
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(0,0,0);
+                doc.text('Accredited Medical Laboratory Services', 15, yPos + 14);
+                doc.setFontSize(7);
+                doc.text(`Patient ID: ${reportData.patient_id}`, 150, yPos + 14);
+                
+                // Row 3: Address and Password
+                doc.setFontSize(8);
+                doc.text('123 Medical Center Drive, Healthcare City', 15, yPos + 19);
+                doc.setFontSize(7);
+                doc.text(`Password: ${reportData.password}`, 150, yPos + 19);
+                
+                // Row 4: Contact and Access
+                doc.setFontSize(8);
+                doc.text('Phone: +1 (555) 123-4567 | Email: info@healthcarelab.com', 15, yPos + 24);
+                doc.setFontSize(7);
+                doc.text('Access: hclonline.vercel.app', 150, yPos + 24);
+
+                // --- TEST TITLE (individual test name) ---
+                yPos = 50;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(26, 35, 126);
+                doc.text(testName.toUpperCase(), 105, yPos, { align: 'center' });
+
+                // --- PATIENT INFORMATION TABLE ---
+                yPos = 70;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(25, 118, 210); // #1976d2
+                doc.text('PATIENT INFORMATION', 20, yPos);
+                yPos += 8;
+                
+                // Patient info table
+                const patientData = [
+                    ['Patient Name:', reportData.patient_name, 'Age:', reportData.age],
+                    ['Gender:', reportData.gender, 'Contact:', reportData.contact],
+                    ['Patient ID:', reportData.patient_id, 'Collection Date:', reportData.date]
+                ];
+                
+                for (let i = 0; i < patientData.length; i++) {
+                    const row = patientData[i];
+                    const rowY = yPos + (i * 8);
+                    
+                    // Row background (alternating like printer.py)
+                    const bgColor = i % 2 === 0 ? [227, 242, 253] : [255, 255, 255]; // #e3f2fd or white
+                    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                    doc.rect(20, rowY - 2, 170, 8, 'F');
+                    
+                    // Row border
+                    doc.setDrawColor(224, 224, 224); // #e0e0e0
+                    doc.rect(20, rowY - 2, 170, 8);
+                    
+                    // Content
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9);
+                    doc.setTextColor(0,0,0);
+                    doc.text(row[0], 22, rowY + 2); // Label 1
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(row[1], 60, rowY + 2); // Value 1
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(row[2], 120, rowY + 2); // Label 2
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(row[3], 158, rowY + 2); // Value 2
+                }
+                
+                yPos += 32; // Space after patient table
+
+                // --- TEST RESULTS FOR INDIVIDUAL TEST ---
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(25, 118, 210);
+                doc.text('TEST RESULTS', 20, yPos);
+                yPos += 8;
+                
+                // Table header (exactly like printer.py)
+                doc.setFillColor(26, 35, 126); // #1a237e
+                doc.rect(20, yPos - 2, 174, 8, 'F');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.setTextColor(255, 255, 255);
+                doc.text('Parameter', 22, yPos + 2);
+                doc.text('Result', 70, yPos + 2);
+                doc.text('Unit', 110, yPos + 2);
+                doc.text('Reference Range', 150, yPos + 2);
+                doc.text('Status', 180, yPos + 2);
+                yPos += 8;
+                
+                // Table rows (exactly like printer.py)
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(0,0,0);
+                const testFields = (unitsAndRanges[testName] || []);
+                
+                for (let i = 0; i < testFields.length; i++) {
+                    const field = testFields[i];
+                    const value = (reportData.test_results && reportData.test_results[field.name]) || '';
+                    
+                    // Alternating row colors (exactly like printer.py)
+                    const bgColor = i % 2 === 0 ? [248, 253, 255] : [255, 255, 255]; // #f8fdff or white
+                    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                    doc.rect(20, yPos - 2, 174, 6, 'F');
+                    
+                    // Cell borders
+                    doc.setDrawColor(224, 224, 224);
+                    doc.rect(20, yPos - 2, 174, 6);
+                    
+                    // Add right border for Status column
+                    doc.line(194, yPos - 2, 194, yPos + 4);
+                    
+                    // Content with exact alignment like printer.py
+                    doc.text(field.name, 22, yPos + 2); // Left aligned
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(String(value), 70, yPos + 2); // Center aligned
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(field.unit || '-', 110, yPos + 2); // Center aligned
+                    doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
+                    
+                    // Status (exactly like printer.py)
+                    const refRange = field.reference_range || '-';
+                    const { status, color: statusColor } = parseAndCheckRange(value, refRange);
+                    let statusSymbol = '';
+                    if (status === 'High') statusSymbol = '^ High';
+                    else if (status === 'Low') statusSymbol = 'v Low';
+                    else if (status === 'Abnormal') statusSymbol = '!!'; // warning, double exclamation for visibility
+                    else if (status === 'Normal') statusSymbol = 'Normal';
+                    doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11); // Set font size to 11 for status
+                    doc.text(statusSymbol, 188, yPos + 2); // Center aligned, moved right
+                    doc.setTextColor(0,0,0);
+                    doc.setFont('helvetica', 'normal');
+                    
+                    yPos += 6;
+                    if (yPos > 270) { doc.addPage(); yPos = 20; }
+                }
+                yPos += 4;
+
+                // --- COMMENTS SECTION (only on last large test page if available) ---
+                if (reportData.comments && reportData.comments.trim() && i === largeTests.length - 1) {
+                    yPos += 6;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(25, 118, 210);
+                    doc.text("IMPORTANT COMMENTS:", 20, yPos);
+                    yPos += 6;
+                    
+                    // Comments box (exactly like printer.py)
+                    doc.setFillColor(255, 248, 225); // #fff8e1
+                    doc.setDrawColor(255, 213, 79); // #ffd54f
+                    doc.rect(20, yPos - 4, 170, 12, 'F');
+                    doc.rect(20, yPos - 4, 170, 12);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(10);
+                    doc.setTextColor(0,0,0);
+                    const splitComments = doc.splitTextToSize(reportData.comments, 165);
+                    doc.text(splitComments, 22, yPos + 4);
+                    yPos += splitComments.length * 5 + 8;
+                }
+
+                // --- FOOTER (only on last large test page) ---
+                if (i === largeTests.length - 1) {
+                    yPos = Math.max(yPos, 270);
+                    doc.setFillColor(245, 245, 245); // #f5f5f5
+                    doc.setDrawColor(224, 224, 224); // #e0e0e0
+                    doc.rect(20, yPos, 170, 15, 'F');
+                    doc.rect(20, yPos, 170, 15);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8);
+                    doc.setTextColor(102, 102, 102); // #666666
+                    doc.text('Healthcare Clinical Laboratory | Accredited by Medical Laboratory Standards | ISO 15189:2012 Certified |', 22, yPos + 5);
+                    doc.text('Address: 123 Medical Center Drive, Healthcare City, HC 12345 | Phone: +1 (555) 123-4567 |', 22, yPos + 9);
+                    doc.setFont('helvetica', 'italic');
+                    doc.text('This report is computer generated and does not require a signature.', 22, yPos + 13);
+                }
+            }
+
+            doc.save(`Lab_Report_${reportData.patient_id}.pdf`);
+        }
+
+        // Print function - uses same format as download with group test logic
+        function printReport() {
+            if (!window.currentReportData) {
+                alert('No report data available');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const reportData = window.currentReportData;
+
+            // --- SEPARATE TESTS INTO SMALL AND LARGE (like printer.py) ---
+            let testNames = reportData.test_names || reportData.test_name || [];
+            if (typeof testNames === 'string') {
+                try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
+            }
+            
+            const unitsAndRanges = reportData.units_and_ranges || {};
+            let smallTests = [];
+            let largeTests = [];
+            
+            for (const testName of testNames) {
+                const testFields = (unitsAndRanges[testName] || []);
+                if (testFields.length < 3) {
+                    smallTests.push(testName);
+                } else {
+                    largeTests.push(testName);
+                }
+            }
+
+            let isFirstPage = true;
+
+            // --- GROUPED SMALL TESTS (like printer.py) ---
+            if (smallTests.length > 0) {
+                if (!isFirstPage) { 
+                    doc.addPage(); 
+                }
+                isFirstPage = false;
+                
+                // Header
+                let yPos = 10;
+                doc.setFillColor(248, 253, 255); // #f8fdff
+                doc.rect(10, yPos, 190, 28, 'F');
+                doc.setDrawColor(26, 35, 126); // #1a237e
+                doc.rect(10, yPos, 190, 28);
+                
+                // Row 1: Lab name and QR code
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(26, 35, 126);
+                doc.text('HEALTHCARE CLINICAL LABORATORY', 15, yPos + 8);
+                
+                // QR code (right side)
+                if (window.QRCode) {
+                    const qrUrl = `https://hclonline.vercel.app/view?patient_id=${reportData.patient_id}&password=${reportData.password}`;
+                    const qr = new window.QRCode(document.createElement('div'), {
+                        text: qrUrl,
+                        width: 40,
+                        height: 40,
+                        correctLevel: window.QRCode.CorrectLevel.L
+                    });
+                    const qrImg = qr._oDrawing._elImage.src;
+                    doc.addImage(qrImg, 'PNG', 170, yPos + 3, 20, 20);
+                }
+                
+                // Row 2: Services and Patient ID
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(0,0,0);
+                doc.text('Accredited Medical Laboratory Services', 15, yPos + 14);
+                doc.setFontSize(7);
+                doc.text(`Patient ID: ${reportData.patient_id}`, 150, yPos + 14);
+                
+                // Row 3: Address and Password
+                doc.setFontSize(8);
+                doc.text('123 Medical Center Drive, Healthcare City', 15, yPos + 19);
+                doc.setFontSize(7);
+                doc.text(`Password: ${reportData.password}`, 150, yPos + 19);
+                
+                // Row 4: Contact and Access
+                doc.setFontSize(8);
+                doc.text('Phone: +1 (555) 123-4567 | Email: info@healthcarelab.com', 15, yPos + 24);
+                doc.setFontSize(7);
+                doc.text('Access: hclonline.vercel.app', 150, yPos + 24);
+
+                // --- GROUPED TESTS TITLE (like printer.py) ---
+                yPos = 50;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(26, 35, 126);
+                doc.text('GROUPED TESTS', 105, yPos, { align: 'center' });
+
+                // --- PATIENT INFORMATION TABLE ---
+                yPos = 70;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(25, 118, 210); // #1976d2
+                doc.text('PATIENT INFORMATION', 20, yPos);
+                yPos += 8;
+                
+                // Patient info table
+                const patientData = [
+                    ['Patient Name:', reportData.patient_name, 'Age:', reportData.age],
+                    ['Gender:', reportData.gender, 'Contact:', reportData.contact],
+                    ['Patient ID:', reportData.patient_id, 'Collection Date:', reportData.date]
+                ];
+                
+                for (let i = 0; i < patientData.length; i++) {
+                    const row = patientData[i];
+                    const rowY = yPos + (i * 8);
+                    
+                    // Row background (alternating like printer.py)
+                    const bgColor = i % 2 === 0 ? [227, 242, 253] : [255, 255, 255]; // #e3f2fd or white
+                    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                    doc.rect(20, rowY - 2, 170, 8, 'F');
+                    
+                    // Row border
+                    doc.setDrawColor(224, 224, 224); // #e0e0e0
+                    doc.rect(20, rowY - 2, 170, 8);
+                    
+                    // Content
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9);
+                    doc.setTextColor(0,0,0);
+                    doc.text(row[0], 22, rowY + 2); // Label 1
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(row[1], 60, rowY + 2); // Value 1
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(row[2], 120, rowY + 2); // Label 2
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(row[3], 158, rowY + 2); // Value 2
+                }
+                
+                yPos += 32; // Space after patient table
+
+                // --- TEST RESULTS FOR GROUPED TESTS ---
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(25, 118, 210);
+                doc.text('TEST RESULTS', 20, yPos);
+                yPos += 8;
+                
+                // Add all small test tables
+                for (const testName of smallTests) {
+                    // Test name header (like printer.py)
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(25, 118, 210);
+                    doc.text(testName.toUpperCase(), 20, yPos);
+                    yPos += 6;
+                    
+                    // Table header (exactly like printer.py)
+                    doc.setFillColor(26, 35, 126); // #1a237e
+                    doc.rect(20, yPos - 2, 174, 8, 'F');
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9);
+                    doc.setTextColor(255, 255, 255);
+                    doc.text('Parameter', 22, yPos + 2);
+                    doc.text('Result', 70, yPos + 2);
+                    doc.text('Unit', 110, yPos + 2);
+                    doc.text('Reference Range', 150, yPos + 2);
+                    doc.text('Status', 180, yPos + 2);
+                    yPos += 8;
+                    
+                    // Table rows (exactly like printer.py)
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9);
+                    doc.setTextColor(0,0,0);
+                    const testFields = (unitsAndRanges[testName] || []);
+                    
+                    for (let i = 0; i < testFields.length; i++) {
+                        const field = testFields[i];
+                        const value = (reportData.test_results && reportData.test_results[field.name]) || '';
+                        
+                        // Alternating row colors (exactly like printer.py)
+                        const bgColor = i % 2 === 0 ? [248, 253, 255] : [255, 255, 255]; // #f8fdff or white
+                        doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                        doc.rect(20, yPos - 2, 174, 6, 'F');
+                        
+                        // Cell borders
+                        doc.setDrawColor(224, 224, 224);
+                        doc.rect(20, yPos - 2, 174, 6);
+                        
+                        // Add right border for Status column
+                        doc.line(194, yPos - 2, 194, yPos + 4);
+                        
+                        // Content with exact alignment like printer.py
+                        doc.text(field.name, 22, yPos + 2); // Left aligned
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(String(value), 70, yPos + 2); // Center aligned
+                        doc.setFont('helvetica', 'normal');
+                        doc.text(field.unit || '-', 110, yPos + 2); // Center aligned
+                        doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
+                        
+                        // Status (exactly like printer.py)
+                        const refRange = field.reference_range || '-';
+                        const { status, color: statusColor } = parseAndCheckRange(value, refRange);
+                        let statusSymbol = '';
+                        if (status === 'High') statusSymbol = '^ High';
+                        else if (status === 'Low') statusSymbol = 'v Low';
+                        else if (status === 'Abnormal') statusSymbol = '!!'; // warning, double exclamation for visibility
+                        else if (status === 'Normal') statusSymbol = 'Normal';
+                        doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(11); // Set font size to 11 for status
+                        doc.text(statusSymbol, 188, yPos + 2); // Center aligned, moved right
+                        doc.setTextColor(0,0,0);
+                        doc.setFont('helvetica', 'normal');
+                        
+                        yPos += 6;
+                        if (yPos > 270) { doc.addPage(); yPos = 20; }
+                    }
+                    yPos += 4;
+                }
+
+                // --- COMMENTS SECTION (only on grouped page if available) ---
+                if (reportData.comments && reportData.comments.trim()) {
+                    yPos += 6;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(25, 118, 210);
+                    doc.text("IMPORTANT COMMENTS:", 20, yPos);
+                    yPos += 6;
+                    
+                    // Comments box (exactly like printer.py)
+                    doc.setFillColor(255, 248, 225); // #fff8e1
+                    doc.setDrawColor(255, 213, 79); // #ffd54f
+                    doc.rect(20, yPos - 4, 170, 12, 'F');
+                    doc.rect(20, yPos - 4, 170, 12);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(10);
+                    doc.setTextColor(0,0,0);
+                    const splitComments = doc.splitTextToSize(reportData.comments, 165);
+                    doc.text(splitComments, 22, yPos + 4);
+                    yPos += splitComments.length * 5 + 8;
+                }
+
+                // --- FOOTER (only on grouped page) ---
+                yPos = Math.max(yPos, 270);
+                doc.setFillColor(245, 245, 245); // #f5f5f5
+                doc.setDrawColor(224, 224, 224); // #e0e0e0
+                doc.rect(20, yPos, 170, 15, 'F');
+                doc.rect(20, yPos, 170, 15);
+                
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
+                doc.setTextColor(102, 102, 102); // #666666
+                doc.text('Healthcare Clinical Laboratory | Accredited by Medical Laboratory Standards | ISO 15189:2012 Certified |', 22, yPos + 5);
+                doc.text('Address: 123 Medical Center Drive, Healthcare City, HC 12345 | Phone: +1 (555) 123-4567 |', 22, yPos + 9);
+                doc.setFont('helvetica', 'italic');
+                doc.text('This report is computer generated and does not require a signature.', 22, yPos + 13);
+
+                // Page break if there are large tests
+                if (largeTests.length > 0) {
+                    doc.addPage();
+                }
+            }
+
+            // --- LARGE TESTS (EACH ON OWN PAGE) ---
+            for (let i = 0; i < largeTests.length; i++) {
+                const testName = largeTests[i];
+                if (i > 0 || (smallTests.length === 0 && i === 0)) { 
+                    doc.addPage(); 
+                }
+                
+                // Header for each large test page
+                let yPos = 10;
+                doc.setFillColor(248, 253, 255); // #f8fdff
+                doc.rect(10, yPos, 190, 28, 'F');
+                doc.setDrawColor(26, 35, 126); // #1a237e
+                doc.rect(10, yPos, 190, 28);
+                
+                // Row 1: Lab name and QR code
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(26, 35, 126);
+                doc.text('HEALTHCARE CLINICAL LABORATORY', 15, yPos + 8);
+                
+                // QR code (right side)
+                if (window.QRCode) {
+                    const qrUrl = `https://hclonline.vercel.app/view?patient_id=${reportData.patient_id}&password=${reportData.password}`;
+                    const qr = new window.QRCode(document.createElement('div'), {
+                        text: qrUrl,
+                        width: 40,
+                        height: 40,
+                        correctLevel: window.QRCode.CorrectLevel.L
+                    });
+                    const qrImg = qr._oDrawing._elImage.src;
+                    doc.addImage(qrImg, 'PNG', 170, yPos + 3, 20, 20);
+                }
+                
+                // Row 2: Services and Patient ID
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(0,0,0);
+                doc.text('Accredited Medical Laboratory Services', 15, yPos + 14);
+                doc.setFontSize(7);
+                doc.text(`Patient ID: ${reportData.patient_id}`, 150, yPos + 14);
+                
+                // Row 3: Address and Password
+                doc.setFontSize(8);
+                doc.text('123 Medical Center Drive, Healthcare City', 15, yPos + 19);
+                doc.setFontSize(7);
+                doc.text(`Password: ${reportData.password}`, 150, yPos + 19);
+                
+                // Row 4: Contact and Access
+                doc.setFontSize(8);
+                doc.text('Phone: +1 (555) 123-4567 | Email: info@healthcarelab.com', 15, yPos + 24);
+                doc.setFontSize(7);
+                doc.text('Access: hclonline.vercel.app', 150, yPos + 24);
+
+                // --- TEST TITLE (individual test name) ---
+                yPos = 50;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(26, 35, 126);
+                doc.text(testName.toUpperCase(), 105, yPos, { align: 'center' });
+
+                // --- PATIENT INFORMATION TABLE ---
+                yPos = 70;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(25, 118, 210); // #1976d2
+                doc.text('PATIENT INFORMATION', 20, yPos);
+                yPos += 8;
+                
+                // Patient info table
+                const patientData = [
+                    ['Patient Name:', reportData.patient_name, 'Age:', reportData.age],
+                    ['Gender:', reportData.gender, 'Contact:', reportData.contact],
+                    ['Patient ID:', reportData.patient_id, 'Collection Date:', reportData.date]
+                ];
+                
+                for (let i = 0; i < patientData.length; i++) {
+                    const row = patientData[i];
+                    const rowY = yPos + (i * 8);
+                    
+                    // Row background (alternating like printer.py)
+                    const bgColor = i % 2 === 0 ? [227, 242, 253] : [255, 255, 255]; // #e3f2fd or white
+                    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                    doc.rect(20, rowY - 2, 170, 8, 'F');
+                    
+                    // Row border
+                    doc.setDrawColor(224, 224, 224); // #e0e0e0
+                    doc.rect(20, rowY - 2, 170, 8);
+                    
+                    // Content
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(9);
+                    doc.setTextColor(0,0,0);
+                    doc.text(row[0], 22, rowY + 2); // Label 1
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(row[1], 60, rowY + 2); // Value 1
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(row[2], 120, rowY + 2); // Label 2
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(row[3], 158, rowY + 2); // Value 2
+                }
+                
+                yPos += 32; // Space after patient table
+
+                // --- TEST RESULTS FOR INDIVIDUAL TEST ---
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(25, 118, 210);
+                doc.text('TEST RESULTS', 20, yPos);
+                yPos += 8;
+                
+                // Table header (exactly like printer.py)
+                doc.setFillColor(26, 35, 126); // #1a237e
+                doc.rect(20, yPos - 2, 174, 8, 'F');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.setTextColor(255, 255, 255);
+                doc.text('Parameter', 22, yPos + 2);
+                doc.text('Result', 70, yPos + 2);
+                doc.text('Unit', 110, yPos + 2);
+                doc.text('Reference Range', 150, yPos + 2);
+                doc.text('Status', 180, yPos + 2);
+                yPos += 8;
+                
+                // Table rows (exactly like printer.py)
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(0,0,0);
+                const testFields = (unitsAndRanges[testName] || []);
+                
+                for (let i = 0; i < testFields.length; i++) {
+                    const field = testFields[i];
+                    const value = (reportData.test_results && reportData.test_results[field.name]) || '';
+                    
+                    // Alternating row colors (exactly like printer.py)
+                    const bgColor = i % 2 === 0 ? [248, 253, 255] : [255, 255, 255]; // #f8fdff or white
+                    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+                    doc.rect(20, yPos - 2, 174, 6, 'F');
+                    
+                    // Cell borders
+                    doc.setDrawColor(224, 224, 224);
+                    doc.rect(20, yPos - 2, 174, 6);
+                    
+                    // Add right border for Status column
+                    doc.line(194, yPos - 2, 194, yPos + 4);
+                    
+                    // Content with exact alignment like printer.py
+                    doc.text(field.name, 22, yPos + 2); // Left aligned
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(String(value), 70, yPos + 2); // Center aligned
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(field.unit || '-', 110, yPos + 2); // Center aligned
+                    doc.text(field.reference_range || '-', 150, yPos + 2); // Left aligned
+                    
+                    // Status (exactly like printer.py)
+                    const refRange = field.reference_range || '-';
+                    const { status, color: statusColor } = parseAndCheckRange(value, refRange);
+                    let statusSymbol = '';
+                    if (status === 'High') statusSymbol = '^ High';
+                    else if (status === 'Low') statusSymbol = 'v Low';
+                    else if (status === 'Abnormal') statusSymbol = '!!'; // warning, double exclamation for visibility
+                    else if (status === 'Normal') statusSymbol = 'Normal';
+                    doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11); // Set font size to 11 for status
+                    doc.text(statusSymbol, 188, yPos + 2); // Center aligned, moved right
+                    doc.setTextColor(0,0,0);
+                    doc.setFont('helvetica', 'normal');
+                    
+                    yPos += 6;
+                    if (yPos > 270) { doc.addPage(); yPos = 20; }
+                }
+                yPos += 4;
+
+                // --- COMMENTS SECTION (only on last large test page if available) ---
+                if (reportData.comments && reportData.comments.trim() && i === largeTests.length - 1) {
+                    yPos += 6;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(25, 118, 210);
+                    doc.text("IMPORTANT COMMENTS:", 20, yPos);
+                    yPos += 6;
+                    
+                    // Comments box (exactly like printer.py)
+                    doc.setFillColor(255, 248, 225); // #fff8e1
+                    doc.setDrawColor(255, 213, 79); // #ffd54f
+                    doc.rect(20, yPos - 4, 170, 12, 'F');
+                    doc.rect(20, yPos - 4, 170, 12);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(10);
+                    doc.setTextColor(0,0,0);
+                    const splitComments = doc.splitTextToSize(reportData.comments, 165);
+                    doc.text(splitComments, 22, yPos + 4);
+                    yPos += splitComments.length * 5 + 8;
+                }
+
+                // --- FOOTER (only on last large test page) ---
+                if (i === largeTests.length - 1) {
+                    yPos = Math.max(yPos, 270);
+                    doc.setFillColor(245, 245, 245); // #f5f5f5
+                    doc.setDrawColor(224, 224, 224); // #e0e0e0
+                    doc.rect(20, yPos, 170, 15, 'F');
+                    doc.rect(20, yPos, 170, 15);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8);
+                    doc.setTextColor(102, 102, 102); // #666666
+                    doc.text('Healthcare Clinical Laboratory | Accredited by Medical Laboratory Standards | ISO 15189:2012 Certified |', 22, yPos + 5);
+                    doc.text('Address: 123 Medical Center Drive, Healthcare City, HC 12345 | Phone: +1 (555) 123-4567 |', 22, yPos + 9);
+                    doc.setFont('helvetica', 'italic');
+                    doc.text('This report is computer generated and does not require a signature.', 22, yPos + 13);
+                }
+            }
+
+            // Open PDF in new window for printing
+            const pdfDataUri = doc.output('datauristring');
+            const newWindow = window.open();
+            newWindow.document.write(`
+                <html>
+                    <head><title>Print Report</title></head>
+                    <body>
+                        <embed src="${pdfDataUri}" type="application/pdf" width="100%" height="100%">
+                    </body>
+                </html>
+            `);
+            newWindow.document.close();
+        }
+
+        function shareOnWhatsApp() {
+            if (!window.currentReportData) {
+                alert('No report data available');
+                return;
+            }
+            const reportData = window.currentReportData;
+            const url = `https://hclonline.vercel.app/reports.html?patient_id=${encodeURIComponent(reportData.patient_id)}&password=${encodeURIComponent(reportData.password)}`;
+            const text = `View your lab report from Healthcare Clinical Laboratory:\n${url}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // WhatsApp Widget Logic
+        const waFloatBtn = document.getElementById('waFloatBtn');
+        const waPopup = document.getElementById('waPopup');
+        const waCloseBtn = document.getElementById('waCloseBtn');
+        const waSendBtn = document.getElementById('waSendBtn');
+        
+        waFloatBtn.addEventListener('click', () => {
+            waPopup.classList.toggle('show');
+        });
+        
+        waCloseBtn.addEventListener('click', () => {
+            waPopup.classList.remove('show');
+        });
+        
+        waSendBtn.addEventListener('click', () => {
+            const category = document.getElementById('waCategory').value;
+            const message = document.getElementById('waMessage').value;
+            if(!message.trim()) { alert('Please enter a message.'); return; }
+            
+            const fullText = `*${category}*\n\n${message}`;
+            window.open(`https://wa.me/923139232928?text=${encodeURIComponent(fullText)}`, '_blank');
+            waPopup.classList.remove('show');
+        });
+    </script>
+    </div>
+</body>
+</html>
