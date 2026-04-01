@@ -20,6 +20,7 @@
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
+    <!-- Test Detail Pages -->
     <url>
         <loc>https://hclonline.vercel.app/tests/blood</loc>
         <changefreq>monthly</changefreq>
@@ -64,5 +65,67 @@
         <loc>https://hclonline.vercel.app/tests/widal</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
+    </url>
+    <!-- Location-Targeted Service Pages (SEO) -->
+    <url>
+        <loc>https://hclonline.vercel.app/services/cbc-test-jowar</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/blood-test-salarzai</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/sugar-test-jowar</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/best-lab-buner</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/urine-test-jowar</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/lft-test-buner</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/pregnancy-test-jowar</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <!-- Blog Pages (Topical Authority) -->
+    <url>
+        <loc>https://hclonline.vercel.app/blog/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/blog/cbc-test-kya-hota-hai</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/blog/platelets-low-hone-ki-wajah</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/blog/blood-sugar-kitni-honi-chahiye</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/blog/pregnancy-test-kab-karein</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
     </url>
 </urlset>

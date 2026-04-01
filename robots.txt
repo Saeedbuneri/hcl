@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://hclonline.vercel.app/sitemap.xml
+
+# Healthcare Clinical Laboratory - Jowar, Buner
+# Best diagnostic lab in Buner - CBC, Blood Sugar, LFT, Urine Tests
+# Open 24/7 | Same-day reports | Opposite RHC Jowar
