@@ -110,10 +110,9 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
             <div id="navLinks" class="nav-links" style="margin: 0 auto;">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="services/catalogue.html" class="nav-link">Explore Tests</a>
-                <a href="booking.html" class="nav-link" style="color:#4a90e2;">Book Appointment</a>
-                <a href="reports.html" class="nav-btn">View My Reports</a>
+                <a href="services/catalogue.html" class="nav-link">Tests</a>
+                <a href="booking.html" class="nav-link" style="color:#4a90e2;">Book</a>
+                <a href="reports.html" class="nav-btn">Check Result</a>
             </div>
         </div>
     </nav>
@@ -167,21 +166,36 @@
                     <label for="date">Preferred Date</label>
                     <input type="date" id="date" required>
                 </div>
-                <div class="form-group">
-                    <label for="testType">Test Required</label>
-                    <select id="testType" required>
-                        <option value="" disabled selected>Select a test...</option>
-                        <option value="Blood Test (CBC)">Blood Test (CBC)</option>
-                        <option value="Blood Sugar">Blood Sugar</option>
-                        <option value="Liver Function Test">Liver Function Test</option>
-                        <option value="Urine Routine">Urine Routine</option>
-                        <option value="Lipid Profile">Lipid Profile</option>
-                        <option value="Renal Function Test">Renal Function Test</option>
-                        <option value="Thyroid Profile">Thyroid Profile</option>
-                        <option value="Viral Markers">Viral Markers</option>
-                        <option value="Widal Test">Widal Test</option>
-                        <option value="Other / Not Sure">Other / Not Sure</option>
-                    </select>
+                <div class="form-group" id="testsContainer">
+                    <label>Tests Required</label>
+                    <div class="test-row" style="display:flex; gap:10px; margin-bottom:10px;">
+                        <select class="testType" required onchange="calculateTotal()" style="flex:1;">
+                            <option value="" disabled selected data-price="0">Select a test...</option>
+                            <option value="Blood Test (CBC)" data-price="300">Blood Test (CBC) - Rs. 300</option>
+                            <option value="Blood Sugar" data-price="150">Blood Sugar - Rs. 150</option>
+                            <option value="Liver Function Test" data-price="800">Liver Function Test - Rs. 800</option>
+                            <option value="Urine Routine" data-price="150">Urine Routine - Rs. 150</option>
+                            <option value="Lipid Profile" data-price="1200">Lipid Profile - Rs. 1200</option>
+                            <option value="Renal Function Test" data-price="900">Renal Function Test - Rs. 900</option>
+                            <option value="Thyroid Profile" data-price="1500">Thyroid Profile - Rs. 1500</option>
+                            <option value="Viral Markers" data-price="1200">Viral Markers - Rs. 1200</option>
+                            <option value="Widal Test" data-price="400">Widal Test - Rs. 400</option>
+                            <option value="Other / Not Sure" data-price="0">Other / Not Sure - Ask Price</option>
+                        </select>
+                        <button type="button" onclick="removeTest(this)" style="padding: 10px; background: #ff4757; color: white; border: none; border-radius: 8px; cursor: pointer; visibility: hidden; width: 45px;">-</button>
+                    </div>
+                </div>
+                <button type="button" onclick="addTest()" style="margin-bottom: 20px; padding: 10px; background: #f8fafc; color: #4a90e2; border: 2px dashed #4a90e2; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; transition: background 0.3s;">+ Add Another Test</button>
+
+                <div id="receiptBox" style="margin-bottom: 20px; padding: 15px; background: #f0fdf4; border-radius: 8px; border: 1px solid #a7f3d0; display: none;">
+                    <h4 style="margin-bottom: 10px; color: #065f46; font-size: 16px;">Booking Receipt</h4>
+                    <ul id="receiptItems" style="list-style: none; margin-bottom: 10px; color: #047857; padding: 0; font-size: 14px;"></ul>
+                    <hr style="border: 0; border-top: 1px solid #a7f3d0; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; color: #047857; font-size: 18px;">
+                        <span>Estimated Total:</span>
+                        <span id="receiptTotal">Rs. 0</span>
+                    </div>
+                    <p style="font-size: 12px; color: #059669; margin-top: 8px; opacity: 0.8;">* Final price may vary if tests are modified at clinic.</p>
                 </div>
                 <div class="form-group">
                     <label for="serviceType">Service Type</label>
@@ -199,20 +213,153 @@
     </div>
 
     <script>
+        // Managing Multiple Tests
+        function addTest() {
+            const container = document.getElementById('testsContainer');
+            const rows = container.getElementsByClassName('test-row');
+            if (rows.length >= 8) {
+                alert("Maximum 8 tests can be selected at once.");
+                return;
+            }
+            const firstRowOptions = rows[0].querySelector('select').innerHTML;
+            
+            const newRow = document.createElement('div');
+            newRow.className = 'test-row';
+            newRow.style.cssText = 'display:flex; gap:10px; margin-bottom:10px;';
+            newRow.innerHTML = `
+                <select class="testType" required onchange="calculateTotal()" style="flex:1;">
+                    ${firstRowOptions}
+                </select>
+                <button type="button" onclick="removeTest(this)" style="padding: 10px; background: #ff4757; color: white; border: none; border-radius: 8px; cursor: pointer; width: 45px;">-</button>
+            `;
+            container.appendChild(newRow);
+            
+            // Show all minus buttons if more than 1
+            updateMinusButtons();
+            calculateTotal();
+        }
+
+        function removeTest(btn) {
+            const row = btn.parentElement;
+            row.remove();
+            updateMinusButtons();
+            calculateTotal();
+        }
+
+        function updateMinusButtons() {
+            const rows = document.getElementsByClassName('test-row');
+            const firstMinusBtn = rows[0].querySelector('button');
+            if (rows.length > 1) {
+                firstMinusBtn.style.visibility = 'visible';
+            } else {
+                firstMinusBtn.style.visibility = 'hidden';
+            }
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            const selects = document.querySelectorAll('.testType');
+            const receiptItems = document.getElementById('receiptItems');
+            receiptItems.innerHTML = '';
+            
+            const selectedTests = [];
+            
+            selects.forEach(select => {
+                const opt = select.options[select.selectedIndex];
+                if (opt && opt.value) {
+                    const price = parseInt(opt.getAttribute('data-price')) || 0;
+                    total += price;
+                    
+                    if(opt.value !== "") {
+                        selectedTests.push(opt.value);
+                        const li = document.createElement('li');
+                        li.style.cssText = "display: flex; justify-content: space-between; padding: 4px 0;";
+                        li.innerHTML = `<span>${opt.value}</span><span>Rs. ${price}</span>`;
+                        receiptItems.appendChild(li);
+                    }
+                }
+            });
+            
+            const receiptBox = document.getElementById('receiptBox');
+            if (selectedTests.length > 0) {
+                receiptBox.style.display = 'block';
+                document.getElementById('receiptTotal').innerText = `Rs. ${total}`;
+            } else {
+                receiptBox.style.display = 'none';
+            }
+            
+            // Save state
+            saveFormState();
+        }
+
+        // State Management
+        function saveFormState() {
+            const name = document.getElementById('name').value;
+            const date = document.getElementById('date').value;
+            const serviceType = document.getElementById('serviceType').value;
+            
+            const selects = Array.from(document.querySelectorAll('.testType')).map(s => s.value);
+            
+            sessionStorage.setItem('bookingState', JSON.stringify({ name, date, serviceType, selects }));
+        }
+
+        document.getElementById('name').addEventListener('input', saveFormState);
+        document.getElementById('date').addEventListener('input', saveFormState);
+        document.getElementById('serviceType').addEventListener('change', saveFormState);
+
         document.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const testParam = params.get('test');
-            if (testParam) {
-                const select = document.getElementById('testType');
-                for (let i = 0; i < select.options.length; i++) {
-                    if (select.options[i].value === testParam) {
-                        select.selectedIndex = i;
-                        break;
+            // Restore state if available
+            const savedItem = sessionStorage.getItem('bookingState');
+            if (savedItem) {
+                const state = JSON.parse(savedItem);
+                if (state.name) document.getElementById('name').value = state.name;
+                if (state.date) document.getElementById('date').value = state.date;
+                if (state.serviceType) document.getElementById('serviceType').value = state.serviceType;
+                
+                if (state.selects && state.selects.length > 0) {
+                    const container = document.getElementById('testsContainer');
+                    const rows = container.getElementsByClassName('test-row');
+                    
+                    // Add enough rows
+                    while (rows.length < state.selects.length) {
+                        addTest();
+                    }
+                    
+                    // Populate rows
+                    for(let i=0; i < state.selects.length; i++) {
+                        const select = rows[i].querySelector('.testType');
+                        for(let j=0; j < select.options.length; j++) {
+                            if (select.options[j].value === state.selects[i]) {
+                                select.selectedIndex = j;
+                                break;
+                            }
+                        }
                     }
                 }
             }
+            
+            // Allow URL Parameter matching to override state for a specific test
+            const params = new URLSearchParams(window.location.search);
+            const testParam = params.get('test');
+            if (testParam) {
+                try {
+                    const selects = document.querySelectorAll('.testType');
+                    if (selects.length > 0) {
+                        const select = selects[0];
+                        for (let i = 0; i < select.options.length; i++) {
+                            if (select.options[i].value === testParam) {
+                                select.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }
+            
+            calculateTotal(); // Trigger visual update
         });
 
+        // Other Scripts
         document.getElementById('mobileMenuBtn').addEventListener('click', function() {
             document.getElementById('navLinks').classList.toggle('active');
         });
@@ -223,13 +370,8 @@
         const waCloseBtn = document.getElementById('waCloseBtn');
         const waSendBtn = document.getElementById('waSendBtn');
         
-        waFloatBtn.addEventListener('click', () => {
-            waPopup.classList.toggle('show');
-        });
-        
-        waCloseBtn.addEventListener('click', () => {
-            waPopup.classList.remove('show');
-        });
+        waFloatBtn.addEventListener('click', () => waPopup.classList.toggle('show'));
+        waCloseBtn.addEventListener('click', () => waPopup.classList.remove('show'));
         
         waSendBtn.addEventListener('click', () => {
             const category = document.getElementById('waCategory').value;
@@ -245,10 +387,31 @@
             e.preventDefault();
             const name = document.getElementById('name').value;
             const date = document.getElementById('date').value;
-            const testType = document.getElementById('testType').value;
             const serviceType = document.getElementById('serviceType').value;
             
-            const message = `Hello Healthcare Clinical Laboratory - Jowar, Buner! I would like to book an appointment.\n\n*Name:* ${name}\n*Date:* ${date}\n*Test Needed:* ${testType}\n*Service:* ${serviceType}\n\nPlease let me know the timing and details.`;
+            const selects = document.querySelectorAll('.testType');
+            const selectedTestsArray = [];
+            let total = 0;
+            
+            selects.forEach(select => {
+                const opt = select.options[select.selectedIndex];
+                if (opt && opt.value) {
+                    selectedTestsArray.push(opt.value);
+                    total += parseInt(opt.getAttribute('data-price')) || 0;
+                }
+            });
+            
+            if (selectedTestsArray.length === 0) {
+                alert("Please select at least one test.");
+                return;
+            }
+            
+            const testListString = selectedTestsArray.map((t, idx) => `${idx+1}. ${t}`).join('%0A');
+            
+            const message = `Hello Healthcare Clinical Laboratory - Jowar, Buner! I would like to book an appointment.\n\n*Name:* ${name}\n*Date:* ${date}\n*Service:* ${serviceType}\n\n*Tests Needed:*\n${decodeURIComponent(testListString)}\n\n*Estimated Total:* Rs. ${total}\n\nPlease conform my booking timing and details.`;
+            
+            // Clear session state upon successful submission intention
+            sessionStorage.removeItem('bookingState');
             
             const whatsappUrl = `https://wa.me/923139232928?text=${encodeURIComponent(message)}`;
             window.location.href = whatsappUrl;
