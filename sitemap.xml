@@ -68,37 +68,37 @@
     </url>
     <!-- Location-Targeted Service Pages (SEO) -->
     <url>
-        <loc>https://hclonline.vercel.app/services/cbc-test-jowar</loc>
+        <loc>https://hclonline.vercel.app/services/cbc-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://hclonline.vercel.app/services/blood-test-salarzai</loc>
+        <loc>https://hclonline.vercel.app/services/blood-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://hclonline.vercel.app/services/sugar-test-jowar</loc>
+        <loc>https://hclonline.vercel.app/services/sugar-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://hclonline.vercel.app/services/best-lab-buner</loc>
+        <loc>https://hclonline.vercel.app/services/catalogue</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://hclonline.vercel.app/services/urine-test-jowar</loc>
+        <loc>https://hclonline.vercel.app/services/urine-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://hclonline.vercel.app/services/lft-test-buner</loc>
+        <loc>https://hclonline.vercel.app/services/lft-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://hclonline.vercel.app/services/pregnancy-test-jowar</loc>
+        <loc>https://hclonline.vercel.app/services/pregnancy-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>

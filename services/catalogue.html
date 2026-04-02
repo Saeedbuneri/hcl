@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Test Catalogue - Healthcare Clinical Laboratory</title>
+    <link rel="stylesheet" href="shared-style.css">
+    <style>
+        :root { --primary: #0ea5e9; --secondary: #1e293b; --accent: #f43f5e; --text: #334155; --bg: #f8fafc; --card-bg: #ffffff; --border-color: #e2e8f0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0; }
+        
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .service-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 35px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-decoration: none; color: inherit; display: block; position: relative; overflow: hidden; }
+        .service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 0; background: linear-gradient(180deg, rgba(14,165,233,0.05) 0%, transparent 100%); transition: height 0.4s; }
+        .service-card:hover { transform: translateY(-10px); border-color: rgba(14, 165, 233, 0.3); box-shadow: 0 20px 50px rgba(15, 23, 42, 0.05); }
+        .service-icon { background: rgba(14, 165, 233, 0.1); color: var(--primary); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; transition: transform 0.3s; }
+        .service-card:hover .service-icon { transform: scale(1.1) rotate(5deg); }
+        .service-card h3 { font-size: 22px; color: var(--secondary); margin: 0 0 15px 0; font-weight: 700; transition: color 0.3s; }
+        .service-card:hover h3 { color: var(--primary); }
+        .service-card p { color: #64748b; font-size: 16px; margin: 0 0 25px 0; line-height: 1.6; }
+        .service-link { display: inline-flex; align-items: center; gap: 8px; color: var(--primary); font-weight: 600; font-size: 15px; }
+        
+        .header { background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; padding: 60px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 3em; }
+        .header p { font-size: 1.2em; opacity: 0.9; margin-top: 10px; }
+        
+        nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+        .nav-brand { font-size: 20px; font-weight: bold; color: var(--primary); font-weight: 800; text-decoration: none; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { text-decoration: none; color: var(--secondary); font-weight: 600; }
+        .nav-links a:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="../index.html" class="nav-brand">HCL</a>
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="catalogue.html" style="color:var(--primary);">Explore Tests</a>
+            <a href="../booking.html">Book Appointment</a>
+        </div>
+    </nav>
+
+    <header class="header">
+        <h1>Complete Test Catalogue</h1>
+        <p>Comprehensive Diagnostic Solutions</p>
+    </header>
+
+    <div class="services-grid">
+        <a href="cbc-test.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+            <h3>Blood Tests (CBC)</h3>
+            <p>Complete hematology profiles including platelets, hemoglobin, RBC/WBC counts for infection and anemia screening.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="sugar-test.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+            <h3>Diabetes / Sugar</h3>
+            <p>Fasting, Random blood sugar, and precise HbA1c testing for long-term diabetes management.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="urine-test.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg></div>
+            <h3>Urine Analysis</h3>
+            <p>Comprehensive physical, chemical, and microscopic examination to detect UTIs and kidney health issues.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="lft-test.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>
+            <h3>Liver Function (LFT)</h3>
+            <p>Complete liver screening to monitor critical organ operation and overall systemic health.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="renal.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+            <h3>Renal Function (RFT)</h3>
+            <p>Kidney health monitoring and performance assessment through creatinine, urea, and electrolyte tests.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="lipid.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg></div>
+            <h3>Lipid Profile</h3>
+            <p>Cholesterol screening including HDL, LDL, and Triglycerides to assess cardiovascular disease risk.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="thyroid.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+            <h3>Thyroid Profile</h3>
+            <p>Targeted testing of T3, T4, and TSH levels to evaluate thyroid gland health and metabolic function.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="viral.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+            <h3>Viral Markers</h3>
+            <p>Hepatitis B, Hepatitis C, HIV, and other viral screenings for precise infectious disease diagnosis.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="widal.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+            <h3>Widal Test</h3>
+            <p>Typhoid/enteric fever screening through precise agglutination testing of Salmonella antibodies.</p>
+            <span class="service-link">View Details</span>
+        </a>
+        <a href="pregnancy-test.html" class="service-card">
+            <div class="service-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg></div>
+            <h3>Pregnancy Test</h3>
+            <p>Accurate, confidential, and fast rapid testing with highest sensitivity for early detection.</p>
+            <span class="service-link">View Details</span>
+        </a>
+    </div>
+</body>
+</html>
