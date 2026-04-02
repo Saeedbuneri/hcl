@@ -6,8 +6,8 @@
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://hclonline.vercel.app/tests</loc>
-        <changefreq>monthly</changefreq>
+        <loc>https://hclonline.vercel.app/services/catalogue</loc>
+        <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
@@ -20,75 +20,14 @@
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
-    <!-- Test Detail Pages -->
-    <url>
-        <loc>https://hclonline.vercel.app/tests/blood</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/tests/sugar</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/tests/lft</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/tests/urine</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/tests/lipid</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/tests/renal</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/tests/thyroid</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/tests/viral</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/tests/widal</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <!-- Location-Targeted Service Pages (SEO) -->
-    <url>
-        <loc>https://hclonline.vercel.app/services/cbc-test</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
+    <!-- Diagnostic Test Pages -->
     <url>
         <loc>https://hclonline.vercel.app/services/blood-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://hclonline.vercel.app/services/sugar-test</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/services/catalogue</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://hclonline.vercel.app/services/urine-test</loc>
+        <loc>https://hclonline.vercel.app/services/cbc-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
@@ -98,11 +37,46 @@
         <priority>0.9</priority>
     </url>
     <url>
+        <loc>https://hclonline.vercel.app/services/lipid</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
         <loc>https://hclonline.vercel.app/services/pregnancy-test</loc>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
-    <!-- Blog Pages (Topical Authority) -->
+    <url>
+        <loc>https://hclonline.vercel.app/services/renal</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/sugar-test</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/thyroid</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/urine-test</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/viral</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://hclonline.vercel.app/services/widal</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <!-- Blog Pages -->
     <url>
         <loc>https://hclonline.vercel.app/blog/</loc>
         <changefreq>weekly</changefreq>
