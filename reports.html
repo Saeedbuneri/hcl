@@ -233,6 +233,7 @@
                 margin: 0;
                 padding: 20px;
             }
+            .visit-content { display: block !important; }
             .container {
                 box-shadow: none;
                 border-radius: 0;
@@ -581,47 +582,127 @@
             const patientDetails = document.getElementById('patientDetails');
             patientDetails.innerHTML = `
                 <table style="width: 100%; border: none;">
-                    <tr><td style="border: none; font-weight: bold;">Patient ID:</td><td style="border: none;">${reportData.patient_id}</td></tr>
-                    <tr><td style="border: none; font-weight: bold;">Name:</td><td style="border: none;">${reportData.patient_name}</td></tr>
-                    <tr><td style="border: none; font-weight: bold;">Age:</td><td style="border: none;">${reportData.age}</td></tr>
-                    <tr><td style="border: none; font-weight: bold;">Gender:</td><td style="border: none;">${reportData.gender}</td></tr>
-                    <tr><td style="border: none; font-weight: bold;">Contact:</td><td style="border: none;">${reportData.contact}</td></tr>
-                    <tr><td style="border: none; font-weight: bold;">Date:</td><td style="border: none;">${reportData.date}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Patient ID:</td><td style="border: none;">${reportData.patient_id || '-'}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Name:</td><td style="border: none;">${reportData.patient_name || '-'}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Age:</td><td style="border: none;">${reportData.age || '-'}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Gender:</td><td style="border: none;">${reportData.gender || '-'}</td></tr>
+                    <tr><td style="border: none; font-weight: bold;">Contact:</td><td style="border: none;">${reportData.contact || '-'}</td></tr>
                 </table>
             `;
 
             const testResults = document.getElementById('testResults');
-            // Support multiple tests and units/ranges
-            let testHtml = '';
-            let testNames = reportData.test_names || reportData.test_name || [];
-            if (typeof testNames === 'string') {
-                try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
+            
+            // Format visits
+            let visitsHtml = '';
+            
+            // Collect visits into an array and sort by date descending
+            let visitsArray = [];
+            // Backwards compatibility with old single-report schema
+            if (!reportData.visits && reportData.test_names) {
+                visitsArray.push({
+                    date: reportData.date || 'Unknown Date',
+                    timestamp: Date.now(),
+                    test_names: reportData.test_names,
+                    units_and_ranges: reportData.units_and_ranges,
+                    test_results: reportData.test_results,
+                    comments: reportData.comments
+                });
+            } else if (reportData.visits) {
+                visitsArray = Object.values(reportData.visits);
+                visitsArray.sort((a, b) => {
+                    return (b.timestamp || 0) - (a.timestamp || 0);
+                });
             }
-            const unitsAndRanges = reportData.units_and_ranges || {};
-            for (const testName of testNames) {
-                testHtml += `<div style="margin-bottom:20px;">
-                    <div style="font-weight:bold; color:#357abd; font-size:16px; margin-bottom:5px;">${testName}</div>
-                    <table><thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Reference Range</th></tr></thead><tbody>`;
-                const testFields = (unitsAndRanges[testName] || []);
-                for (const field of testFields) {
-                    const value = (reportData.test_results && reportData.test_results[field.name]) || '';
-                    testHtml += `<tr><td>${field.name}</td><td><strong>${value}</strong></td><td>${field.unit || '-'}</td><td>${field.reference_range || '-'}</td></tr>`;
-                }
-                testHtml += `</tbody></table></div>`;
-            }
-            if (!testHtml) {
-                testHtml = '<p>No test results available.</p>';
-            }
-            testResults.innerHTML = testHtml;
-
-            // Display comments if available
-            if (reportData.comments && reportData.comments.trim()) {
-                document.getElementById('commentsSection').style.display = 'block';
-                document.getElementById('doctorComments').innerHTML = `
-                    <p style="background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #4a90e2;">${reportData.comments}</p>
-                `;
+            
+            if (visitsArray.length === 0) {
+                visitsHtml = '<p>No test reports found for this patient.</p>';
             } else {
-                document.getElementById('commentsSection').style.display = 'none';
+                visitsArray.forEach((visit, index) => {
+                    const isExpanded = index === 0; // Expand the most recent by default
+                    let testHtml = '';
+                    
+                    let testNames = visit.test_names || visit.test_name || [];
+                    if (typeof testNames === 'string') {
+                        try { testNames = JSON.parse(testNames); } catch { testNames = [testNames]; }
+                    }
+                    
+                    const unitsAndRanges = visit.units_and_ranges || {};
+                    for (const testName of testNames) {
+                        testHtml += `<div style="margin-bottom:20px; margin-top: 15px;">
+                            <div style="font-weight:bold; color:#357abd; font-size:16px; margin-bottom:5px;">${testName}</div>
+                            <table><thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Reference Range</th></tr></thead><tbody>`;
+                        const testFields = (unitsAndRanges[testName] || []);
+                        for (const field of testFields) {
+                            const value = (visit.test_results && visit.test_results[field.name]) || '';
+                            testHtml += `<tr><td>${field.name}</td><td><strong>${value}</strong></td><td>${field.unit || '-'}</td><td>${field.reference_range || '-'}</td></tr>`;
+                        }
+                        testHtml += `</tbody></table></div>`;
+                    }
+                    if (!testHtml) {
+                        testHtml = '<p>No test results available for this visit.</p>';
+                    }
+                    
+                    let commentsHtml = '';
+                    if (visit.comments && visit.comments.trim()) {
+                        commentsHtml = `
+                            <div style="margin-top: 15px;">
+                                <h4 style="margin-bottom: 8px;">Doctor's Comments</h4>
+                                <p style="background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #4a90e2;">${visit.comments}</p>
+                            </div>
+                        `;
+                    }
+
+                    visitsHtml += `
+                        <div style="border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden;">
+                            <div style="background: #f1f5f9; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'; this.querySelector('.icon').textContent = this.nextElementSibling.style.display === 'none' ? '+' : '-';">
+                                <strong style="font-size: 16px; color: #333;">Report Date: ${visit.date}</strong>
+                                <span class="icon" style="font-size: 20px; font-weight: bold; color: #4a90e2;">${isExpanded ? '-' : '+'}</span>
+                            </div>
+                            <div class="visit-content" style="display: ${isExpanded ? 'block' : 'none'}; padding: 15px 20px; background: white;">
+                                ${testHtml}
+                                ${commentsHtml}
+                                <div style="margin-top: 15px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+                                    <button class="btn btn-inline btn-secondary" onclick="window.exportVisit(${index})" style="padding: 10px 15px; font-size: 14px; width: auto;">Download PDF</button>
+                                    <button class="btn btn-inline" onclick="window.shareVisitWhatsApp(${index})" style="padding: 10px 15px; font-size: 14px; width: auto; background: #25D366; color: white;">Share WhatsApp</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            testResults.innerHTML = visitsHtml;
+
+            // Save global data for export
+            window.patientBaseInfo = reportData;
+            window.currentVisits = visitsArray;
+
+            // Helper functions for visit export
+            window.exportVisit = (index) => {
+                const visit = window.currentVisits[index];
+                // Temporarily override currentReportData with merged info for legacy exporters
+                window.currentReportData = { ...window.patientBaseInfo, ...visit, date: visit.date };
+                if (typeof downloadPDF === 'function') downloadPDF();
+                else window.downloadPDF();
+            };
+
+            window.shareVisitWhatsApp = (index) => {
+                const visit = window.currentVisits[index];
+                window.currentReportData = { ...window.patientBaseInfo, ...visit, date: visit.date };
+                if (typeof shareOnWhatsApp === 'function') shareOnWhatsApp();
+                else window.shareOnWhatsApp();
+            };
+
+            // Hide specific comments section as it's incorporated inside visits now
+            const commentsSection = document.getElementById('commentsSection');
+            if (commentsSection) {
+                commentsSection.style.display = 'none';
+            }
+
+            // Hide main action buttons since they are now per-visit
+            const actionButtons = document.querySelector('.action-buttons');
+            if (actionButtons) {
+                actionButtons.style.display = 'none';
             }
 
             // Show the report
