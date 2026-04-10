@@ -406,10 +406,14 @@
     <div class="main-wrapper">
         <div class="container">
         <div class="header">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <img src="../src/renderer/assets/logo.png" alt="HCL Logo" style="width: 100px; height: auto;" onerror="this.style.display='none'">
+            </div>
             <div class="logo">Healthcare Clinical Laboratory - Jowar, Buner</div>
             <div class="subtitle">Laboratory Report Access</div>
         </div>
         <div id="labDetails" style="display:none; text-align:center; margin-bottom:20px;">
+            <img src="../src/renderer/assets/logo.png" alt="HCL Logo" style="width: 80px; height: auto; margin-bottom: 10px;" onerror="this.style.display='none'">
             <div style="font-size:18px; font-weight:bold; color:#4a90e2;">Healthcare Clinical Laboratory - Jowar, Buner</div>
             <div style="font-size:14px; color:#333;">Opposite to RHC jower</div>
             <div style="font-size:14px; color:#333;">Contact: 03139232928</div>
@@ -444,7 +448,8 @@
             </div>
             
             <div class="test-results">
-                <h3>Test Results</h3>
+                <h3>Patient Test History</h3>
+                <p id="totalVisits" style="font-size: 14px; color: #64748b; margin-bottom: 15px; font-weight: bold;"></p>
                 <div id="testResults"></div>
             </div>
             
@@ -678,6 +683,7 @@
             window.currentVisits = visitsArray;
 
             // Helper functions for visit export
+            document.getElementById('totalVisits').textContent = `Total Visits: ${visitsArray.length}`;
             window.exportVisit = (index) => {
                 const visit = window.currentVisits[index];
                 // Temporarily override currentReportData with merged info for legacy exporters
