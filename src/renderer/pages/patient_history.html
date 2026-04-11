@@ -143,8 +143,8 @@
                                 <td style="font-weight:bold;">Rs. ${booking.total_amount}</td>
                                 <td><span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">${booking.status}</span></td>
                                 <td style="display: flex; gap: 5px; flex-wrap: wrap; align-items: center; border-bottom: none;">
-                                    <button onclick="window.api.openPrintWindow({db_id: '${booking.id}'})" style="background:#10b981; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;" ${!isCompleted ? 'disabled opacity="0.5"' : ''}>Print</button> 
-                                    <button onclick="revertBookingLocal('${booking.id}')" style="background:#f59e0b; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;" ${!isCompleted ? 'disabled opacity="0.5"' : ''}>Edit</button>
+                                    <button onclick="window.api.openPrintWindow('db_id=${booking.id}')" style="background:#10b981; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; ${!isCompleted ? 'opacity:0.5;' : ''}" ${!isCompleted ? 'disabled' : ''}>Print</button>
+                                    <button onclick="revertBookingLocal('${booking.id}')" style="background:#f59e0b; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; ${!isCompleted ? 'opacity:0.5;' : ''}" ${!isCompleted ? 'disabled' : ''}>Edit</button>
                                     <button onclick="deleteBookingLocal('${booking.id}')" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">Delete</button>
                                 </td>
                             </tr>`;
@@ -273,7 +273,8 @@
                 return;
             }
 
-            window.api.openPrintWindow(queryParams);
+            const urlStr = new URLSearchParams(queryParams).toString();
+            window.api.openPrintWindow(urlStr);
         }
 
         function closeModal() {
@@ -297,9 +298,7 @@
         window.addEventListener('DOMContentLoaded', () => switchTab('tests'));
     
         // --- EDIT PATIENT LOGIC ---
-        async function openEditPatientModal(patientIdMatch) {
-            const patientId = patientIdMatch.split("'")[1];
-            
+        async function openEditPatientModal(patientId) {
             const syncDetails = await window.api.getManualSyncDetails(patientId);
             if (syncDetails && syncDetails.success && syncDetails.localPatient) {
                  const p = syncDetails.localPatient;

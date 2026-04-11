@@ -263,7 +263,7 @@ async function getPendingBookings() {
         'completed', r.completed,
         'parameters', t.parameters,
         'parameter_data', r.parameter_data
-      )) FROM results r JOIN tests t ON r.test_id = t.id WHERE r.booking_id = b.id
+      )) FROM results r JOIN tests_catalog t ON r.test_id = t.id WHERE r.booking_id = b.id
     ) as tests_json
     FROM bookings b JOIN patients p ON b.patient_id = p.id
     WHERE b.status='Pending'
