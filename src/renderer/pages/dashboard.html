@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HCL - Admin Dashboard</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2 style="text-align:center; padding: 20px; color: #38bdf8;">HCL Dashboard</h2>
+        <ul>
+            <li><a href="dashboard.html" class="active">Dashboard Main</a></li>
+            <li><a href="new_booking.html">New Booking</a></li>
+            <li><a href="pending_results.html">Pending Results (Data Entry)</a></li>
+            <li><a href="test_manager.html">Test Catalog Manager</a></li>
+            <li><a href="patient_history.html">Patient History</a></li>
+            <li><a href="sync_manager.html">Sync Details Manager</a></li>
+            <li><a href="admin_settings.html">Admin Settings & Sync</a></li>
+        </ul>
+        <div style="flex-grow: 1;"></div>
+        <ul>
+            <li><a href="login.html?clear=1" style="color: #ef4444; border-top: 1px solid #334155;">Logout</a></li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <header style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h1>Laboratory Activity Overview</h1>
+                <p>Welcome back. Real-time stats across all systems.</p>
+            </div>
+            <img src="../assets/logo.png" alt="HCL Logo" style="width: 100px; height: auto; border-radius: 8px;" onerror="this.style.display='none'">
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Today's Walk-in Patients</h3>
+                <p class="stat-val" id="todayPatients">0</p>
+                <div style="font-size: 12px; color: #10b981; margin-top: 10px;">↑ In clinic flow</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Pending Tests Processing</h3>
+                <p class="stat-val" id="pendingTests" style="color: #f59e0b;">0</p>
+                <div style="font-size: 12px; margin-top: 10px;">Requires Tech Data Entry</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Completed Today</h3>
+                <p class="stat-val" id="completedTests" style="color: #8b5cf6;">0</p>
+                <div style="font-size: 12px; margin-top: 10px;">Synced successfully to cloud</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; background: white; border-radius: 10px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h2 style="margin-bottom: 20px; color: #1e293b;">Recent Patient Queue</h2>
+            <div id="recentQueue" style="color: #64748b;">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadDashboardData() {
+            // Using existing IPC calls to fill the simple dashboard without revenue data
+            const pendingBookings = await window.api.getPendingBookings();
+            const allBookings = await window.api.getPatientHistory();
+            
+            // Calculate statuses simply from front-end for quick dashboard visual
+            const todayStr = new Date().toLocaleDateString();
+            const todayBookings = allBookings.filter(b => new Date(b.date).toLocaleDateString() === todayStr);
+            const completedToday = todayBookings.filter(b => b.status === "Completed");
+
+            document.getElementById('todayPatients').textContent = todayBookings.length;
+            document.getElementById('pendingTests').textContent = pendingBookings.length;
+            document.getElementById('completedTests').textContent = completedToday.length;
+
+            const queueContainer = document.getElementById('recentQueue');
+            if (todayBookings.length === 0) {
+                queueContainer.innerHTML = 'No bookings found for today. Start by creating a New Booking.';
+            } else {
+                let html = `<table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <th style="padding: 10px;">Time</th>
+                        <th style="padding: 10px;">Patient</th>
+                        <th style="padding: 10px;">ID</th>
+                        <th style="padding: 10px;">Status</th>
+                    </tr>`;
+                
+                todayBookings.slice(0, 6).forEach(b => {
+                    const time = new Date(b.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const isCompleted = b.status === 'Completed';
+                    const badge = `<span style="padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; background: ${isCompleted ? '#dcfce7' : '#fef9c3'}; color: ${isCompleted ? '#059669' : '#d97706'};">${b.status}</span>`;
+                    
+                    html += `<tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 10px; color: #475569; font-size: 14px;">${time}</td>
+                        <td style="padding: 10px; font-weight: 500; color: #1e293b;">${b.patient_name}</td>
+                        <td style="padding: 10px; color: #64748b; font-size: 14px;">${b.patient_id}</td>
+                        <td style="padding: 10px;">${badge}</td>
+                    </tr>`;
+                });
+                
+                html += `</table>`;
+                queueContainer.innerHTML = html;
+            }
+        }
+        
+        // Global Enter key navigation
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                const focusable = Array.from(document.querySelectorAll("input, select, button")).filter(el => !el.disabled && el.offsetParent !== null);
+                const index = focusable.indexOf(document.activeElement);
+                if (index > -1 && index + 1 < focusable.length) {
+                    e.preventDefault();
+                    focusable[index + 1].focus();
+                }
+            }
+        });
+
+        loadDashboardData();
+    </script>
+</body>
+</html>

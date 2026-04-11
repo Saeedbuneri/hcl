@@ -1,0 +1,11 @@
+node_modules/
+dist/
+win-unpacked/
+*.exe
+*.exe.blockmap
+*.yaml
+*.yml
+.env
+db/*.db
+temp_asar/
+node_modules

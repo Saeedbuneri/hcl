@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Settings</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .settings-card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .form-row { margin-bottom: 15px; }
+        .form-row label { display: block; margin-bottom: 5px; color: #64748b; font-size: 14px; }
+        .form-row input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .btn-save { padding: 10px 20px; background: #0ea5e9; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-save:hover { background: #0284c7; }
+        .btn-danger { background: #ef4444; }
+        .btn-danger:hover { background: #b91c1c; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2 style="text-align:center; padding: 20px; color: #38bdf8;">HCL Dashboard</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard Main</a></li>
+            <li><a href="new_booking.html">New Booking</a></li>
+            <li><a href="pending_results.html">Pending Results</a></li>
+            <li><a href="test_manager.html">Test Catalog Manager</a></li>
+            <li><a href="patient_history.html">Patient History</a></li>
+            <li><a href="admin_settings.html" class="active">Admin Settings & Sync</a></li>
+        </ul>
+        <div style="flex-grow: 1;"></div>
+        <ul><li><a href="login.html?clear=1" style="color: #ef4444; border-top: 1px solid #334155;">Logout</a></li></ul>
+    </div>
+    
+    <div class="main-content">
+        <header style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h1>Admin Settings</h1>
+                <p>Configure Laboratory details and background sync engine.</p>
+            </div>
+            <img src="../assets/logo.png" alt="HCL Logo" style="width: 100px; height: auto;" onerror="this.style.display='none'">
+        </header>
+
+        <div class="settings-card">
+            <h3>Laboratory Profile</h3><br>
+            <div class="form-row">
+                <label>Laboratory Name</label>
+                <input type="text" id="labName" value="Healthcare Clinical Laboratory - Jowar, Buner">
+            </div>
+            <div class="form-row">
+                <label>Lab Address</label>
+                <input type="text" id="labAddress" value="Opposite RHC Jowar, Salarzai, Buner">
+            </div>
+            <div class="form-row">
+                <label>Contact Phone</label>
+                <input type="text" id="labPhone" value="03139232928">
+            </div>
+            <button class="btn-save" onclick="saveSettings()">Save Preferences</button>
+        </div>
+
+        <div class="settings-card">
+            <h3>Database & System</h3><br>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">Advanced local database operations.</p>
+            
+            <div style="display: flex; gap: 15px; margin-top: 15px;">
+                <button class="btn-save btn-danger" onclick="alert('This will clear local cache. Under development.')">Clear Local Cache</button>
+                <button class="btn-save" style="background:#10b981;" onclick="forceFullSync(this)">Load & Force Sync All Data</button>
+            </div>
+
+            <h3 style="margin-top: 30px;">Advanced Laboratory Analytics</h3><br>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">View comprehensive financial, demographic, and test performance data.</p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-save" style="background:#8b5cf6;" onclick="window.location.href='analytics.html'">Open Analytics Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function saveSettings() {
+            localStorage.setItem('labName', document.getElementById('labName').value);
+            localStorage.setItem('labAddress', document.getElementById('labAddress').value);
+            localStorage.setItem('labPhone', document.getElementById('labPhone').value);
+            alert('Settings saved successfully!');
+        }
+
+        async function forceFullSync(btn) {
+            btn.innerText = 'Syncing... Please Wait';
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+
+            try {
+                const res = await window.api.forceFullSync();
+                if (res && res.success) {
+                    alert('Full Data Sync to Firebase completed successfully!');
+                } else {
+                    alert('Sync failed: ' + (res.error || 'Unknown network error.'));
+                }
+            } catch (e) {
+                alert('Sync Process failed. Check internet connection.');
+            } finally {
+                btn.innerText = 'Load & Force Sync All Data';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        }
+
+        // Load initial
+        document.getElementById('labName').value = localStorage.getItem('labName') || "Healthcare Clinical Laboratory - Jowar, Buner";
+        document.getElementById('labAddress').value = localStorage.getItem('labAddress') || "Opposite RHC Jowar, Salarzai, Buner";
+        document.getElementById('labPhone').value = localStorage.getItem('labPhone') || "03139232928";
+        // Global Enter key navigation
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                const focusable = Array.from(document.querySelectorAll("input, select, button")).filter(el => !el.disabled && el.offsetParent !== null);
+                const index = focusable.indexOf(document.activeElement);
+                if (index > -1 && index + 1 < focusable.length) {
+                    e.preventDefault();
+                    focusable[index + 1].focus();
+                }
+            }
+        });
+        
+    </script>
+</body>
+</html>

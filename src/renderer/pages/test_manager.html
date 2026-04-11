@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HCL - Test Catalog Manager</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
+        .test-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; }
+        .test-card h3 { color: #1e293b; font-size: 16px; margin-bottom: 10px; }
+        .test-price { font-size: 20px; color: #0ea5e9; font-weight: bold; margin-bottom: 10px; }
+        .test-params { font-size: 12px; color: #64748b; line-height: 1.5; }
+        .edit-btn { position: absolute; top: 15px; right: 15px; color: #0ea5e9; cursor: pointer; text-decoration: underline; font-size: 12px; }
+        .add-new { background: #e0f2fe; border: 2px dashed #38bdf8; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #0284c7; font-weight: bold; text-align: center;}
+        .add-new:hover { background: #bae6fd; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2 style="text-align:center; padding: 20px; color: #38bdf8;">HCL Dashboard</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard Main</a></li>
+            <li><a href="new_booking.html">New Booking</a></li>
+            <li><a href="pending_results.html">Pending Results</a></li>
+            <li><a href="test_manager.html" class="active">Test Catalog Manager</a></li>
+            <li><a href="patient_history.html">Patient History</a></li>
+            <li><a href="admin_settings.html">Admin Settings & Sync</a></li>
+        </ul>
+        <div style="flex-grow: 1;"></div>
+        <ul><li><a href="login.html?clear=1" style="color: #ef4444; border-top: 1px solid #334155;">Logout</a></li></ul>
+    </div>
+    
+    <div class="main-content">
+        <header>
+            <h1>Test Catalog & Rates</h1>
+            <p>Manage test packages, pricing, normal ranges, and units for the entire lab. (Admin Only)</p>
+        </header>
+
+        <div class="test-grid" id="testGrid">
+            <div class="test-card add-new" id="addNewBtn" style="min-height: 150px;">
+                + Add New Test Profile
+            </div>
+            <!-- Dynamic content will be injected here -->
+        </div>
+    </div>
+
+    <!-- Simple Modal for Adding a Test -->
+    <div id="addModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:25px; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.3); z-index:100; min-width:600px; max-height:80vh; overflow-y:auto;">
+        <h3>Add New Test Profile</h3>
+        <p><input type="text" id="testName" placeholder="Test / Profile Name (e.g. CBC, LFT)" style="width:100%; padding:8px; margin:5px 0; border:1px solid #ccc; border-radius:4px;"></p>
+        <p>
+            <select id="testCategory" style="width:100%; padding:8px; margin:5px 0; border:1px solid #ccc; border-radius:4px;">
+                <option value="">Select Category</option>
+                <option value="Hematology">Hematology</option>
+                <option value="Biochemistry">Biochemistry</option>
+                <option value="Immunology">Immunology</option>
+                <option value="Microbiology">Microbiology</option>
+                <option value="Molecular Diagnostics">Molecular Diagnostics</option>
+                <option value="Serology">Serology</option>
+                <option value="Pathology">Pathology</option>
+                <option value="Urine Analysis">Urine Analysis</option>
+                <option value="General">General / Others</option>
+            </select>
+        </p>
+        <p><input type="number" id="testPrice" placeholder="Price / Rate (Rs.)" style="width:100%; padding:8px; margin:5px 0; border:1px solid #ccc; border-radius:4px;"></p>
+        
+        <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+            <h4>Test Parameters</h4>
+            <div id="paramsList"></div>
+            <button onclick="addParamRow()" style="margin-top:10px; background:#f1f5f9; color:#0ea5e9; border:1px solid #cbd5e1; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">+ Add Parameter</button>
+        </div>
+
+        <div style="text-align:right; margin-top:20px; border-top: 1px solid #eee; padding-top: 15px;">
+            <button id="cancelBtn" style="padding:8px 15px; margin-right:10px; cursor:pointer; border:1px solid #ccc; border-radius:4px; background:white;">Cancel</button>
+            <button id="saveBtn" style="padding:8px 20px; background:#0ea5e9; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Save Test Data</button>
+        </div>
+    </div>
+    
+    <script>
+        const UNITS = ["mg/dL", "g/dL", "%", "/cmm", "10^3/µL", "10^6/µL", "fl", "pg", "g/L", "mmol/L", "mEq/L", "U/L", "U/mL", "µg/dL", "pg/mL", "ng/mL", "mIU/mL", "ng/dL", "µIU/mL", "Positive/Negative", "N/A"];
+        let allTests = [];
+        let currentEditId = null;
+
+        async function loadTests() {
+            const grid = document.getElementById('testGrid');
+            const addNewBtn = document.getElementById('addNewBtn');
+            grid.innerHTML = '';
+            grid.appendChild(addNewBtn);
+            
+            allTests = await window.api.getTests();
+            allTests.forEach(test => {
+                let paramsHTML = '';
+                try {
+                    // Check if it's JSON from new format
+                    const parsed = JSON.parse(test.parameters);
+                    if (Array.isArray(parsed)) {
+                        paramsHTML = `<table style="width:100%; text-align:left; border-collapse: collapse; margin-top: 10px;">
+                            <tr style="border-bottom: 1px solid #eee; color:#94a3b8;"><th style="padding:2px 0; font-weight:normal;">Param</th><th style="padding:2px 0; font-weight:normal;">Normals</th><th style="padding:2px 0; font-weight:normal;">Unit</th></tr>`;
+                        parsed.forEach(p => {
+                            paramsHTML += `<tr><td style="padding:2px 0;">${p.name}</td><td style="padding:2px 0;">${p.ref}</td><td style="padding:2px 0; color:#64748b;">${p.unit}</td></tr>`;
+                        });
+                        paramsHTML += '</table>';
+                    } else { throw new Error('Not array'); }
+                } catch (e) {
+                    // Fallback to old pure string
+                    paramsHTML = `Parameters: ${test.parameters}`;
+                }
+
+        const card = document.createElement('div');
+                card.className = 'test-card';
+                card.innerHTML = `
+                    <span class="edit-btn" onclick="editTest(${test.id})">Edit</span>
+                    <div style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-bottom:4px;">${test.category || 'General'}</div>
+                    <h3>${test.name}</h3>
+                    <div class="test-price">Rs. ${test.price}</div>
+                    <div class="test-params">
+                        ${paramsHTML}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function addParamRow(name = '', ref = '', unit = 'N/A') {
+            const container = document.getElementById('paramsList');
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.gap = '10px';
+            row.style.marginBottom = '10px';
+            row.className = 'param-row';
+            
+            let unitOptions = UNITS.map(u => `<option value="${u}" ${u === unit ? "selected" : ""}>${u}</option>`).join('');
+
+            row.innerHTML = `
+                <input type="text" class="p-name" placeholder="Parameter Name (e.g. WBC)" value="${name}" style="flex:2; padding:6px; border:1px solid #ccc; border-radius:4px;" required>
+                <input type="text" class="p-ref" placeholder="Normal Range" value="${ref}" style="flex:2; padding:6px; border:1px solid #ccc; border-radius:4px;" required>
+                <select class="p-unit" style="flex:1.5; padding:6px; border:1px solid #ccc; border-radius:4px;">
+                    ${unitOptions}
+                </select>
+                <button type="button" onclick="this.parentElement.remove()" style="background:#ef4444; color:white; border:none; padding:0 10px; cursor:pointer; border-radius:4px;" title="Remove this parameter">&times;</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function editTest(id) {
+            const test = allTests.find(t => t.id === id);
+            if(!test) return;
+
+            currentEditId = id;
+            document.getElementById('testName').value = test.name;
+            document.getElementById('testCategory').value = test.category || 'General';
+            document.getElementById('testPrice').value = test.price;
+            
+            const container = document.getElementById('paramsList');
+            container.innerHTML = '';
+            
+            try {
+                const parsed = JSON.parse(test.parameters);
+                if(Array.isArray(parsed) && parsed.length > 0) {
+                    parsed.forEach(p => addParamRow(p.name, p.ref, p.unit));
+                } else {
+                    addParamRow();
+                }
+            } catch(e) {
+                 addParamRow('Legacy: ' + test.parameters, '-', 'N/A');
+            }
+
+            document.querySelector('#addModal h3').innerText = 'Edit Test Profile';
+            document.getElementById('addModal').style.display = 'block';
+        }
+
+        document.getElementById('addNewBtn').addEventListener('click', () => {
+            currentEditId = null;
+            document.getElementById('testName').value = '';
+            document.getElementById('testCategory').value = '';
+            document.getElementById('testPrice').value = '';
+
+            document.getElementById('paramsList').innerHTML = ''; // clear rows
+            addParamRow(); // start with one blank row
+            document.querySelector('#addModal h3').innerText = 'Add New Test Profile';
+            document.getElementById('addModal').style.display = 'block';
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            document.getElementById('addModal').style.display = 'none';
+        });
+
+        document.getElementById('saveBtn').addEventListener('click', async () => {
+            const name = document.getElementById('testName').value;
+            const category = document.getElementById('testCategory').value || 'General';
+            const price = document.getElementById('testPrice').value;
+            
+            // Gather parameters logic
+            const paramRows = document.querySelectorAll('.param-row');
+            let paramsArr = [];
+            paramRows.forEach(row => {
+                const pName = row.querySelector('.p-name').value.trim();
+                const pRef = row.querySelector('.p-ref').value.trim();
+                const pUnit = row.querySelector('.p-unit').value;
+                if (pName) {
+                    paramsArr.push({ name: pName, ref: pRef, unit: pUnit });
+                }
+            });
+
+            if (name && price && paramsArr.length > 0) {
+                const jsonParams = JSON.stringify(paramsArr);
+
+                if (currentEditId) {
+                    await window.api.updateTest(currentEditId, name, parseFloat(price), jsonParams, category);
+                } else {
+                    await window.api.addTest(name, parseFloat(price), jsonParams, category);
+                }
+
+                document.getElementById('addModal').style.display = 'none';
+                
+                // Form reset
+                document.getElementById('testName').value = '';
+                document.getElementById('testCategory').value = '';
+                document.getElementById('testPrice').value = '';
+                document.getElementById('paramsList').innerHTML = '';
+                currentEditId = null;
+
+                loadTests();
+            } else {
+                alert("Please fill Test Name, Price, and at least 1 valid Parameter.");
+            }
+        });
+
+        // Global Enter key navigation
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                const focusable = Array.from(document.querySelectorAll("input, select, button")).filter(el => !el.disabled && el.offsetParent !== null);
+                const index = focusable.indexOf(document.activeElement);
+                if (index > -1 && index + 1 < focusable.length) {
+                    e.preventDefault();
+                    focusable[index + 1].focus();
+                }
+            }
+        });
+
+        // Initialize
+        loadTests();
+    </script>
+</body>
+</html>

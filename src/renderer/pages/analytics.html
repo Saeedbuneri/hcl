@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HCL - Advanced Analytics</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <script src="../assets/chart.js"></script>
+    <style>
+        .analytics-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            align-items: center;
+        }
+
+        .filter-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn.active {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .an-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .an-title {
+            color: #64748b;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .an-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+        
+        .an-trend {
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .trend-up { color: #10b981; }
+        .trend-down { color: #ef4444; }
+        
+        .chart-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        .chart-header {
+            font-size: 16px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+        
+        .top-tests-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .top-tests-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .top-tests-item:last-child {
+            border-bottom: none;
+        }
+        
+        .test-name {
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .test-count {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2 style="text-align:center; padding: 20px; color: #38bdf8;">HCL Dashboard</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard Main</a></li>
+            <li><a href="new_booking.html">New Booking</a></li>
+            <li><a href="pending_results.html">Pending Results</a></li>
+            <li><a href="test_manager.html">Test Catalog Manager</a></li>
+            <li><a href="patient_history.html">Patient History</a></li>
+            <li><a href="admin_settings.html">Admin Settings & Sync</a></li>
+        </ul>
+        <div style="flex-grow: 1;"></div>
+        <ul>
+            <li><a href="login.html?clear=1" style="color: #ef4444; border-top: 1px solid #334155;">Logout</a></li>
+        </ul>
+    </div>
+    
+    <div class="main-content" style="background-color: #f8fafc; min-height: 100vh;">
+        <header style="background: transparent; box-shadow: none; padding-bottom: 0;">
+            <h1>Performance & Analytics</h1>
+            <p>Track your laboratory's growth, visit patterns, and revenue insights.</p>
+        </header>
+
+        <div class="analytics-filters">
+            <span style="font-weight: 600; color: #475569; margin-right: 10px;">Time Range:</span>
+            <button class="filter-btn" data-filter="today" onclick="loadAnalytics('today')">Today</button>
+            <button class="filter-btn" data-filter="yesterday" onclick="loadAnalytics('yesterday')">Yesterday</button>
+            <button class="filter-btn" data-filter="7days" onclick="loadAnalytics('7days')">Last 7 Days</button>
+            <button class="filter-btn active" data-filter="30days" onclick="loadAnalytics('30days')">Last 30 Days</button>
+            <button class="filter-btn" data-filter="this_month" onclick="loadAnalytics('this_month')">This Month</button>
+            <button class="filter-btn" data-filter="last_month" onclick="loadAnalytics('last_month')">Last Month</button>
+            <button class="filter-btn" data-filter="90days" onclick="loadAnalytics('90days')">Last 3 Months</button>
+            <button class="filter-btn" data-filter="6months" onclick="loadAnalytics('6months')">Last 6 Months</button>
+            <button class="filter-btn" data-filter="1year" onclick="loadAnalytics('1year')">This Year</button>
+            <button class="filter-btn" data-filter="all" onclick="loadAnalytics('all')">All Time</button>
+
+            <div style="flex-grow: 1;"></div>
+            <button onclick="window.print()" class="btn" style="width: auto; padding: 8px 16px; background: #64748b;">
+                Export PDF
+            </button>
+        </div>
+        
+        <div class="analytics-grid">
+            <div class="an-card">
+                <div class="an-title">Total Revenue</div>
+                <div class="an-value" id="valTotalRev">Rs 0</div>
+                <div class="an-trend trend-up" id="trendRev">Based on selected range</div>
+            </div>
+            <div class="an-card">
+                <div class="an-title">Total Visits</div>
+                <div class="an-value" id="valTotalVisits">0</div>
+                <div class="an-trend trend-up">Patients processed</div>
+            </div>
+            <div class="an-card">
+                <div class="an-title">Today's Revenue</div>
+                <div class="an-value" id="valTodayRev">Rs 0</div>
+                <div class="an-trend trend-up" style="color: #64748b;">Cash collected today</div>
+            </div>
+            <div class="an-card">
+                <div class="an-title">Today's Visits</div>
+                <div class="an-value" id="valTodayVisits">0</div>
+                <div class="an-trend trend-up" style="color: #64748b;">Walk-ins today</div>
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-container">
+                <div class="chart-header">Revenue & Visit Trends</div>
+                <canvas id="trendChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">Top Requested Tests</div>
+                <ul class="top-tests-list" id="topTestsList">
+                    <!-- Filled by JS -->
+                    <div style="text-align: center; color: #94a3b8; padding: 20px;">Loading data...</div>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="chart-row" style="grid-template-columns: 1fr 1fr;">
+            <div class="chart-container">
+                <div class="chart-header">Visit Frequency pattern (Bookings over time)</div>
+                <canvas id="visitChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-header">Revenue by Test Category</div>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-row" style="grid-template-columns: 1fr 1fr;">
+            <div class="chart-container">
+                <div class="chart-header">Test Completion Details & Backlog</div>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-header">Patient Demographics (Gender Focus)</div>
+                <canvas id="demographicChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let trendChartObj = null;
+        let visitChartObj = null;
+        let statusChartObj = null;
+        let categoryChartObj = null;
+        let demographicChartObj = null;
+
+        async function loadAnalytics(filterType) {
+            // Update active state of buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if(btn.dataset.filter === filterType) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            try {
+                const data = await window.api.getAnalyticsData(filterType);
+                
+                // Update Overview Cards
+                document.getElementById('valTotalRev').innerText = `Rs ${(data.overview.total_revenue || 0).toLocaleString()}`;
+                document.getElementById('valTotalVisits').innerText = data.overview.total_visits || 0;
+                document.getElementById('valTodayRev').innerText = `Rs ${(data.overview.today_revenue || 0).toLocaleString()}`;
+                document.getElementById('valTodayVisits').innerText = data.overview.today_visits || 0;
+
+                // Update Top Tests List
+                const topTestsList = document.getElementById('topTestsList');
+                topTestsList.innerHTML = '';
+                if(data.topTests && data.topTests.length > 0) {
+                    data.topTests.forEach(test => {
+                        topTestsList.innerHTML += `
+                            <li class="top-tests-item">
+                                <span class="test-name">${test.test_name}</span>
+                                <span class="test-count">${test.count}</span>
+                            </li>
+                        `;
+                    });
+                } else {
+                    topTestsList.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">No tests performed in this period.</div>';
+                }
+
+                // Prepare Chart Data
+                const labels = data.dailyTrends.map(d => {
+                    const [year, month, day] = d.day.split('-');
+                    const dateObj = new Date(year, month - 1, day);
+                    return dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                });
+                const revenueData = data.dailyTrends.map(d => d.revenue || 0);
+                const visitsData = data.dailyTrends.map(d => d.visits || 0);
+
+                // TREND CHART (Revenue & Visits)
+                const ctx1 = document.getElementById('trendChart').getContext('2d');
+                if(trendChartObj) trendChartObj.destroy();
+                trendChartObj = new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Revenue (Rs)',
+                                data: revenueData,
+                                borderColor: '#0ea5e9',
+                                backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                yAxisID: 'y'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            y: { type: 'linear', display: true, position: 'left', title: {display: true, text: 'Revenue (Rs)'} }
+                        }
+                    }
+                });
+
+                // VISIT CHART (Bar Chart for Visits)
+                const ctx2 = document.getElementById('visitChart').getContext('2d');
+                if(visitChartObj) visitChartObj.destroy();
+                visitChartObj = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Daily Visits',
+                            data: visitsData,
+                            backgroundColor: '#8b5cf6',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true, title: {display: true, text: 'Visits'} }
+                        }
+                    }
+                });
+                
+                // STATUS CHART (Pie Chart)
+                const ctx3 = document.getElementById('statusChart').getContext('2d');
+                if(statusChartObj) statusChartObj.destroy();
+                
+                let statusLabels = [];
+                let statusData = [];
+                if(data.statusBreakdown && data.statusBreakdown.length > 0) {
+                    statusLabels = data.statusBreakdown.map(s => s.status);
+                    statusData = data.statusBreakdown.map(s => s.count);
+                } else {
+                    statusLabels = ['No Data'];
+                    statusData = [1];
+                }
+
+                statusChartObj = new Chart(ctx3, {
+                    type: 'pie',
+                    data: {
+                        labels: statusLabels,
+                        datasets: [{
+                            data: statusData,
+                            backgroundColor: ['#10b981', '#f59e0b', '#64748b'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+
+                // CATEGORY CHART (Doughnut)
+                const ctx4 = document.getElementById('categoryChart').getContext('2d');
+                if(categoryChartObj) categoryChartObj.destroy();
+                let catLabels = [];
+                let catData = [];
+                if(data.categoryStats && data.categoryStats.length > 0) {
+                    catLabels = data.categoryStats.map(s => s.category);
+                    catData = data.categoryStats.map(s => s.revenue || 0);
+                }
+                
+                categoryChartObj = new Chart(ctx4, {
+                    type: 'doughnut',
+                    data: {
+                        labels: catLabels,
+                        datasets: [{
+                            data: catData,
+                            backgroundColor: ['#0ea5e9', '#8b5cf6', '#ec4899', '#f43f5e', '#14b8a6', '#f59e0b', '#eab308'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        cutout: '50%',
+                        plugins: {
+                            legend: { position: 'right' }
+                        }
+                    }
+                });
+
+                // DEMOGRAPHIC CHART (Pie)
+                const ctx5 = document.getElementById('demographicChart').getContext('2d');
+                if(demographicChartObj) demographicChartObj.destroy();
+                let genLabels = [];
+                let genData = [];
+                if(data.genderDemographic && data.genderDemographic.length > 0) {
+                    genLabels = data.genderDemographic.map(s => s.gender);
+                    genData = data.genderDemographic.map(s => s.count);
+                }
+                
+                demographicChartObj = new Chart(ctx5, {
+                    type: 'pie',
+                    data: {
+                        labels: genLabels,
+                        datasets: [{
+                            data: genData,
+                            backgroundColor: ['#818cf8', '#fb7185', '#94a3b8'],
+                            borderWidth: 1,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+
+            } catch(e) {
+                console.error("Error loading analytics:", e);
+                alert("Failed to load analytics data.");
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAnalytics('30days');
+        });
+    </script>
+</body>
+</html>

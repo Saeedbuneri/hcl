@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HCL - Pending Results</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        .queue-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .queue-table th, .queue-table td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+        .queue-table th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 12px; }
+        .queue-table tr:hover { background: #f1f5f9; cursor: pointer; }
+        .status-badge { background: #fef3c7; color: #d97706; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status-badge-done { background: #d1fae5; color: #059669; }
+        .test-list-item { padding: 10px; border: 1px solid #e2e8f0; margin-bottom: 10px; border-radius: 5px; cursor: pointer; display: flex; justify-content: space-between; }
+        .test-list-item:hover { background: #f8fafc; }
+        .test-completed { border-left: 4px solid #10b981; }
+        .test-pending { border-left: 4px solid #f59e0b; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2 style="text-align:center; padding: 20px; color: #38bdf8;">HCL Dashboard</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard Main</a></li>
+            <li><a href="new_booking.html">New Booking</a></li>
+            <li><a href="pending_results.html" class="active">Pending Results</a></li>
+            <li><a href="test_manager.html">Test Catalog Manager</a></li>       
+            <li><a href="patient_history.html">Patient History</a></li>
+            <li><a href="admin_settings.html">Admin Settings & Sync</a></li>
+        </ul>
+        <div style="flex-grow: 1;"></div>
+        <ul><li><a href="login.html?clear=1" style="color: #ef4444; border-top: 1px solid #334155;">Logout</a></li></ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Pending Results & Data Entry</h1>
+            <p>Click on a row to view patient tests.</p>
+        </header>
+
+        <table class="queue-table">
+            <thead>
+                <tr>
+                    <th>HCL ID</th>
+                    <th>Patient Name</th>
+                    <th>Time Booked</th>
+                    <th>Tests Waiting</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="pendingTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Multi-test Select Modal -->
+    <div id="testsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; overflow-y: auto; padding: 20px 0;">      
+        <div style="background: white; padding: 40px; border-radius: 10px; width: 600px; max-width: 90%; margin: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="margin-top: 0;">Patient Tests</h2>
+                    <p id="testsModalPatient" style="color: #64748b; margin-bottom: 20px;"></p>
+                </div>
+            </div>
+            
+            <div id="testListContainer" style="margin-bottom: 20px;"></div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button style="padding: 12px; border: none; background: #e2e8f0; border-radius: 5px; cursor:pointer;" onclick="closeTestsModal()">Close</button>    
+                <button style="padding: 12px; flex: 1; background: #8b5cf6; color: white; border: none; border-radius: 5px; cursor:pointer;" onclick="printReport()">Print Consolidated Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Entry Modal -->
+    <div id="entryModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1001; overflow-y: auto; padding: 20px 0;">      
+        <div style="background: white; padding: 40px; border-radius: 10px; width: 800px; max-width: 90%; margin: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 id="modalTitle" style="margin-top: 0;">Enter Results</h2>
+                    <p style="color: #64748b; margin-bottom: 20px;">Type values for <strong id="modalPatient"></strong></p>
+                </div>
+                <div style="text-align: right;">
+                    <label for="analyzerImage" style="display: inline-block; background: #8b5cf6; color: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        📸 Auto-fill from Image
+                    </label>
+                    <input type="file" id="analyzerImage" accept="image/*" style="display: none;" onchange="processImage(this)">
+                    <div id="ocrStatus" style="font-size: 12px; color: #64748b; margin-top: 5px; display: none;">Scanning image...</div>
+                </div>
+            </div>
+
+            <input type="hidden" id="currentBookingId">
+            <input type="hidden" id="currentTestId">
+            <div id="dynamicInputs" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button style="padding: 12px; border: none; background: #e2e8f0; border-radius: 5px; cursor:pointer;" onclick="closeModal()">Back to Tests</button>    
+                <button style="padding: 12px; flex: 1; background: #0ea5e9; color: white; border: none; border-radius: 5px; cursor:pointer;" onclick="saveAndSync()">Save Results</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let latestPendings = [];
+        let currentBookingData = null;
+
+        async function loadPending() {
+            const tbody = document.getElementById('pendingTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading...</td></tr>';
+            try {
+                latestPendings = await window.api.getPendingBookings();
+                tbody.innerHTML = '';
+                if(latestPendings.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No pending bookings.</td></tr>';
+                    return;
+                }
+                latestPendings.forEach(p => {
+                    const time = new Date(p.date).toLocaleTimeString();
+                    const testsJson = JSON.parse(p.tests_json);
+                    
+                    // Add a tick sign in the main queue view for individually completed tests
+                    const testNames = testsJson.map(t => t.completed ? `✔ ${t.test_name}` : t.test_name).join(', ');
+                    
+                    const allDone = testsJson.every(t => t.completed);
+                    const someDone = testsJson.some(t => t.completed);
+
+                    let statusText = 'Pending';
+                    if (allDone) statusText = 'Ready';
+                    else if (someDone) statusText = 'Partially Done';
+
+                    tbody.innerHTML += `
+                        <tr onclick="openTestsModal(${p.id})">
+                            <td style="font-weight: bold; color: #0ea5e9;">${p.patient_id}</td>
+                            <td>${p.patient_name}</td>
+                            <td>${time}</td>
+                            <td><small>${testNames}</small></td>
+                            <td><span class="status-badge ${allDone ? 'status-badge-done' : ''}">${statusText}</span></td>
+                            <td><button style="padding: 6px 12px; background: #0ea5e9; color: white; border: none; border-radius: 4px; cursor: pointer;">View / Enter</button></td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadPending);
+
+        function openTestsModal(bookingId) {
+            const p = latestPendings.find(b => b.id === bookingId);
+            if (!p) return;
+            currentBookingData = p;
+
+            document.getElementById('testsModalPatient').innerText = p.patient_name + ' (' + p.patient_id + ')';
+            
+            const container = document.getElementById('testListContainer');
+            container.innerHTML = '';
+            
+            const testsJson = JSON.parse(p.tests_json);
+            testsJson.forEach(test => {
+                const isCompleted = test.completed === 1;
+                const div = document.createElement('div');
+                div.className = `test-list-item ${isCompleted ? 'test-completed' : 'test-pending'}`;
+                div.innerHTML = `
+                    <div><strong>${test.test_name}</strong></div>
+                    <div><span class="status-badge ${isCompleted ? 'status-badge-done' : ''}">${isCompleted ? '✔ Completed' : 'Pending'}</span></div>
+
+            function closeTestsModal() {
+                document.getElementById('testsModal').style.display = 'none';
+            }
+
+            function openDataEntry(dbId, testId, testName, pName, parametersStr, parameterDataStr) {
+                document.getElementById('currentBookingId').value = dbId;
+                document.getElementById('currentTestId').value = testId;
+                document.getElementById('modalTitle').innerText = testName;
+                document.getElementById('modalPatient').innerText = pName;
+
+                const params = JSON.parse(parametersStr || '[]');
+                
+                let paramDataObj = null;
+                if (parameterDataStr) {
+                    try {
+                        paramDataObj = JSON.parse(parameterDataStr);
+                    } catch(e) { }
+                }
+
+                const container = document.getElementById('dynamicInputs');
+                container.innerHTML = '';
+
+                params.forEach((param, idx) => {
+                    const existingValue = paramDataObj && paramDataObj[param.name] !== undefined ? paramDataObj[param.name] : '';
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                        <label style="display:block; color:#475569; margin-bottom: 5px;">${param.name} (${param.unit})</label>
+                        <input type="number" step="any" id="param_${idx}" value="${existingValue}" class="result-input" data-name="${param.name}" data-min="${param.normalMin}" data-max="${param.normalMax}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" onkeyup="checkAbnormal(this, ${param.normalMin}, ${param.normalMax})">
+                    `;
+                    container.appendChild(div);
+                });
+
+                document.getElementById('analyzerImage').value = '';
+                document.getElementById('ocrStatus').style.display = 'none';
+
+                document.getElementById('entryModal').style.display = 'flex';
+
+                attachEnterNavigation();
+                
+                // Trigger abnormality checks for pre-filled values
+                setTimeout(() => {
+                    document.querySelectorAll('.result-input').forEach(input => {
+                        if(input.value) {
+                            checkAbnormal(input, input.dataset.min, input.dataset.max);
+                        }
+                    });
+                }, 50);
+        }
+        
+        function closeModal() {
+            document.getElementById('entryModal').style.display = 'none';       
+            // optionally refresh modal tests
+            if(currentBookingData) openTestsModal(currentBookingData.id);
+        }
+        
+        async function saveAndSync() {
+            const id = document.getElementById('currentBookingId').value;       
+            const testId = document.getElementById('currentTestId').value;
+            
+            const inputs = document.querySelectorAll('#dynamicInputs .result-input');
+            const dataObj = {};
+            inputs.forEach(input => {
+                dataObj[input.dataset.name] = input.value;
+            });
+            
+            await window.api.completeResult(id, testId, JSON.stringify(dataObj));
+            
+            document.getElementById('entryModal').style.display = 'none';
+            
+            // Reload all
+            await loadPending();
+            const updatedBooking = latestPendings.find(b => b.id == id);
+            if(updatedBooking) openTestsModal(id);
+            else closeTestsModal();
+            
+            alert("Result Saved for this test!");
+        }
+
+        function checkAbnormal(input, min, max) {
+            const val = parseFloat(input.value);
+            if(!isNaN(val) && (val < min || val > max)) {
+                input.style.borderColor = 'red';
+                input.style.color = 'red';
+                input.style.fontWeight = 'bold';
+            } else {
+                input.style.borderColor = '#ccc';
+                input.style.color = 'black';
+                input.style.fontWeight = 'normal';
+            }
+        }
+        
+        function printReport() {
+            if(currentBookingData) {
+                window.api.openPrintWindow('db_id=' + currentBookingData.id);
+            }
+        }
+
+        async function processImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('ocrStatus');
+            status.style.display = 'block';
+            status.style.color = '#64748b';
+            status.innerText = 'Scanning image... please wait (Offline taking ~5s)';
+
+            try {
+                const result = await Tesseract.recognize(file, 'eng');
+                const text = result.data.text;
+                
+                // Extremely simple regex matching, assuming standard formats like "WBC 7.5"
+                const findValueRegex = (name) => {
+                    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // simple escape
+                    const r = new RegExp(`${escaped}[\\s\\:]*([0-9]+\\.?[0-9]*)`, 'i');
+                    const m = text.match(r);
+                    return m ? m[1] : null;
+                };
+
+                const inputs = document.querySelectorAll('#dynamicInputs .result-input');
+                inputs.forEach(el => {
+                    const val = findValueRegex(el.dataset.name);
+                    if (val) { el.value = val; el.dispatchEvent(new Event('keyup')); }
+                });
+
+                status.innerText = 'Done! Please verify values.';
+                setTimeout(() => status.style.display = 'none', 3000);
+            } catch (err) {
+                console.error(err);
+                status.innerText = 'Error reading image.';
+                status.style.color = '#ef4444';
+            }
+        }
+        
+        function attachEnterNavigation() {
+            const inputs = document.querySelectorAll('.result-input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const nextInput = inputs[index + 1];
+                        if (nextInput) {
+                            nextInput.focus();
+                        } else {
+                            saveAndSync();
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+
