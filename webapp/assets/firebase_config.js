@@ -92,7 +92,7 @@ window.api = {
   },
 
   saveBookingWithRef: async (patientData, cartStr, totalAmount, discount, referredBy) => {
-      const cart = JSON.parse(cartStr);
+        const cart = typeof cartStr === 'string' ? JSON.parse(cartStr) : cartStr;
       const testNames = cart.map(c => c.name);
       const newPatientId = generateId().toString();
       const newBookingId = generateId().toString();
@@ -181,7 +181,7 @@ window.api = {
 
       if (!targetDocId) return false;
 
-      let rData = JSON.parse(resultJson);
+let rData = typeof resultJson === 'string' ? JSON.parse(resultJson) : resultJson;
       let tRes = existingVisits[bookingId].test_results || {};
       
       // Update results
