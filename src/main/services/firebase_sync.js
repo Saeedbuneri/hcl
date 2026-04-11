@@ -211,6 +211,7 @@ async function forceFullSync() {
         
         console.log('Pushing any local changes back to Firebase...');
         await syncBookingsToOnline();
+        await syncTestCatalog();
         
         return { success: true };
     } catch (e) {
@@ -218,7 +219,40 @@ async function forceFullSync() {
     }
 }
 
-module.exports = { startSyncInterval, syncBookingsToOnline, fetchManualSyncDetails, updateManualSyncDetails, forceFullSync };
+async function syncTestCatalog() {
+    try {
+        console.log('[Sync] Starting Test Catalog Sync to Firebase...');
+        const tests = await dbLocal.getTests();
+        
+        try {
+            await signInWithEmailAndPassword(auth, 'admin@lab.local', 'admin123456');
+        } catch(e) {
+            const { createUserWithEmailAndPassword } = require('firebase/auth');
+            try {
+               await createUserWithEmailAndPassword(auth, 'admin@lab.local', 'admin123456');
+            } catch(e2) {}
+        }
 
+        let count = 0;
+        for (let test of tests) {
+            const testRef = doc(fsDb, "tests_catalog", test.id.toString());
+            const payload = {
+                name: test.name,
+                price: parseFloat(test.price),
+                category: test.category || 'General',
+                parameters: test.parameters,
+                last_updated: new Date().toISOString()
+            };
+            await setDoc(testRef, payload, { merge: true });
+            count++;
+        }
+        
+        console.log(`[Sync] Successfully Synced ${count} tests to Cloud`);
+        return { success: true, count: count };
+    } catch(err) {
+        console.error('[Sync] Test Catalog Sync Failed: ', err);
+        return { success: false, error: err.message };
+    }
+}
 
-
+module.exports = { startSyncInterval, syncBookingsToOnline, fetchManualSyncDetails, updateManualSyncDetails, forceFullSync, syncTestCatalog };

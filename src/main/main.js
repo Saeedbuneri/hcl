@@ -47,8 +47,20 @@ ipcMain.handle('login', async (event, credentials) => {
 });
 
 ipcMain.handle('getTests', async () => { return db.getTests(); });
-ipcMain.handle('addTest', async (event, name, price, parameters, category) => { return db.addTest(name, price, parameters, category); });
-ipcMain.handle('updateTest', async (event, id, name, price, parameters, category) => { return db.updateTest(id, name, price, parameters, category); });
+ipcMain.handle('addTest', async (event, name, price, parameters, category) => { 
+    try {
+        const res = await db.addTest(name, price, parameters, category); 
+        firebaseSync.syncTestCatalog(); // Fire and forget
+        return res;
+    } catch(e) { throw e; }
+});
+ipcMain.handle('updateTest', async (event, id, name, price, parameters, category) => { 
+    try {
+        const res = await db.updateTest(id, name, price, parameters, category); 
+        firebaseSync.syncTestCatalog(); // Fire and forget
+        return res;
+    } catch(e) { throw e; }
+});
 ipcMain.handle('saveBooking', async (event, patient, tests, total, discount) => { return db.saveBooking(patient, tests, total, discount); });
 ipcMain.handle('getPatientByPhone', async (ev, phone) => { return db.getPatientByPhone(phone); });
   ipcMain.handle('getPatientHistory', async (event, term) => { return db.getPatientHistory(term); });
